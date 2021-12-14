@@ -10,7 +10,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <title>Loop Todo</title>
           <link rel="icon" type="image/jpg" href="/routine-icon-19.jpg"></link>
         </Head>
         <body>
