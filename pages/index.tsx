@@ -17,9 +17,6 @@ const anotherClass = css`
 export default function Home() {
   return (
     <>
-      <Head>
-        <title>With Linaria</title>
-      </Head>
       <Box className={anotherClass}>Zero runtime CSS in JS</Box>
     </>
   );
