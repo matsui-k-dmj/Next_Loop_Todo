@@ -1,3 +1,5 @@
+# 以下は create-next-app から生成
+
 # Example app with [linaria](https://linaria.dev/)
 
 This example features how to use [linaria](https://linaria.dev/) as the styling solution instead of [styled-jsx](https://github.com/vercel/styled-jsx).
