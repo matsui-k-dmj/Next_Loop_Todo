@@ -9,6 +9,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "cypress": "^9.1.1",
     "linaria": "^2.1.0",
     "next": "latest",
     "next-linaria": "^0.11.0",
