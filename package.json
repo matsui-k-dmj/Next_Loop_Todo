@@ -5,8 +5,13 @@
     "build": "next build",
     "start": "next start",
     "format": "prettier --write pages/**/*.{js,ts,jsx,tsx}",
+    "check-format": "prettier --check pages/**/*.{js,ts,jsx,tsx}",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "lint": "next lint",
+    "ci": "npm run check-format && npm run lint && npm run build",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
   "dependencies": {
     "cypress": "^9.1.1",
@@ -24,6 +29,8 @@
     "@storybook/react": "^6.4.9",
     "@types/react": "^17.0.37",
     "babel-loader": "^8.2.3",
+    "eslint": "8.4.1",
+    "eslint-config-next": "12.0.7",
     "prettier": "2.5.1",
     "typescript": "^4.5.4"
   }

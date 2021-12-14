@@ -37,3 +37,5 @@ yarn-error.log*
 .linaria-cache/
 
 stories/
+
+*.mp4
