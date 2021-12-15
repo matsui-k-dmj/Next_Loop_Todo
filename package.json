@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "cypress": "^9.1.1",
+    "date-fns": "^2.27.0",
     "linaria": "^2.1.0",
     "next": "latest",
     "next-linaria": "^0.11.0",

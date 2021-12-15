@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { styled } from "linaria/react";
 import { css } from "linaria";
+import Navbar from "../components/Navbar";
 
 const Box = styled.div`
   margin-top: 40px;
@@ -17,6 +18,7 @@ const anotherClass = css`
 export default function Home() {
   return (
     <>
+      <Navbar></Navbar>
       <Box className={anotherClass}>Zero runtime CSS in JS</Box>
     </>
   );
