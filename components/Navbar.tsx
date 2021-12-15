@@ -1,4 +1,4 @@
-import { css, cx } from "linaria";
+import { css } from "@emotion/react";
 
 const styles = {
   container: css`
@@ -15,7 +15,7 @@ export default function Navbar({ selectedFeature = undefined }: NavbarProps) {
   selectedFeature;
   return (
     <>
-      <div className={styles.container}>
+      <div css={styles.container}>
         <div>Todo</div>
         <div>Routines</div>
         <div>Log</div>
