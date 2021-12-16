@@ -1,10 +1,15 @@
 import { css } from "@emotion/react";
 import { cx } from "@emotion/css";
+import Link from "next/link";
 const styles = {
   container: css`
     display: flex;
     gap: 1rem;
     padding: 1rem;
+  `,
+
+  selected: css`
+    border-bottom: 1px solid #666;
   `,
 
   not_selected: css`
@@ -21,10 +26,26 @@ export default function Navbar({ selectedFeature }: NavbarProps) {
   return (
     <>
       <div css={styles.container}>
-        <div css={selectedFeature !== "todo" && styles.not_selected}>Todo</div>
-        <div css={selectedFeature !== "routines" && styles.not_selected}>
-          Routines
-        </div>
+        <Link href="/">
+          <a
+            css={
+              selectedFeature === "todo" ? styles.selected : styles.not_selected
+            }
+          >
+            Todo
+          </a>
+        </Link>
+        <Link href="/routines">
+          <a
+            css={
+              selectedFeature === "routines"
+                ? styles.selected
+                : styles.not_selected
+            }
+          >
+            Routines
+          </a>
+        </Link>
       </div>
     </>
   );
