@@ -20,11 +20,10 @@ export type Subtask = {
 }
 
 export type Repeat = {
-    type: "day" | "week" | "month" | "year",
+    type: "day" | "week" | "month",
     every: number,
     date: Date,
     dayOfWeeks?: (0 | 1 | 2 | 3 | 4 | 5 | 6)[], // 日曜が0
-    monthType?: "same_day" | "same_dayofweek"
 }
 
 export type DailyTodo = {

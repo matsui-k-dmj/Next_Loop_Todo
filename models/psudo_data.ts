@@ -1,4 +1,5 @@
 import { Rountine } from "./model"
+import { sort } from "lib/utils"
 
 const date = new Date()
 
@@ -33,7 +34,7 @@ const kintore: Rountine = {
 // 平日
 const shukkin: Rountine = {
     routineId: "049852f9-9a70-463a-834d-1bfdb23c7fb4",
-    name: "出勤",
+    name: "出勤だあああああああああああああああああああああああ",
     sortValue: 200000,
     deleted: false,
     subtaskes: [],
@@ -45,7 +46,7 @@ const shukkin: Rountine = {
     }
 }
 
-// 土曜日
+// 2週毎 土曜日
 const souji: Rountine = {
     routineId: "665eeeed-0ef4-4e7a-99b5-b2908bf1683f",
     name: "掃除",
@@ -54,7 +55,7 @@ const souji: Rountine = {
     subtaskes: [],
     repeat: {
         type: "week",
-        every: 1,
+        every: 2,
         date: date,
         dayOfWeeks: [6]
     }
@@ -71,35 +72,9 @@ const hurikaeri: Rountine = {
         type: "month",
         every: 1,
         date: date,
-        monthType: "same_day"
     }
 }
 
-// 毎月同じ曜日
-const nyuukin: Rountine = {
-    routineId: "4cf1c49f-3d03-4cd6-ba34-54d5d11ad85a",
-    name: "入金",
-    sortValue: 500000,
-    deleted: false,
-    subtaskes: [],
-    repeat: {
-        type: "month",
-        every: 1,
-        date: date,
-        monthType: "same_dayofweek"
-    }
-}
 
-// 毎年
-const houhu: Rountine = {
-    routineId: "4cf1c49f-3d03-4cd6-ba34-54d5d11ad85a",
-    name: "新年の抱負",
-    sortValue: 600000,
-    deleted: false,
-    subtaskes: [],
-    repeat: {
-        type: "year",
-        every: 1,
-        date: date,
-    }
-}
+export const routines = sort([breakfast, kintore, shukkin, souji, hurikaeri],
+    x => x.sortValue)
