@@ -2,6 +2,8 @@
 import React from "react";
 import Head from "next/head";
 import "../styles/reset.css";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
 import { css } from "@emotion/react";
 const styles = {
   container: css`
@@ -17,9 +19,11 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>Loop Todo</title>
       </Head>
-      <div css={styles.container}>
-        <Component {...pageProps} />
-      </div>
+      <DndProvider backend={HTML5Backend}>
+        <div css={styles.container}>
+          <Component {...pageProps} />
+        </div>
+      </DndProvider>
     </>
   );
 }
