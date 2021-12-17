@@ -19,6 +19,7 @@ import { DnDType } from "lib/constants";
 
 const styles = {
   list: css`
+    margin-top: 1rem;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
   `,
