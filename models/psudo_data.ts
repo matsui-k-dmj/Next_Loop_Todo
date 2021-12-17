@@ -76,5 +76,5 @@ const hurikaeri: Rountine = {
 }
 
 
-export const routines = sort([breakfast, kintore, shukkin, souji, hurikaeri],
+export const initialRoutines = sort([breakfast, kintore, shukkin, souji, hurikaeri],
     x => x.sortValue)

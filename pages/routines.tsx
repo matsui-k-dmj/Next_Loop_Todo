@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Navbar from "components/Navbar";
 
-import { routines as initialRoutine } from "models/psudo_data";
+import { initialRoutines } from "models/psudo_data";
 import RepeatText from "components/RepeatText";
 
 import { css } from "@emotion/react";
@@ -16,6 +16,7 @@ import {
   XYCoord,
 } from "react-dnd";
 import { DnDType } from "lib/constants";
+import cloneDeep from "lodash/cloneDeep";
 
 const styles = {
   list: css`
@@ -121,7 +122,13 @@ function RoutineItem(props: {
           ]}
         >
           <div>{props.routine.name} </div>
-          <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              flex: "1 0 auto",
+            }}
+          >
             <RepeatText repeat={props.routine.repeat}></RepeatText>
           </div>
         </a>
@@ -131,7 +138,9 @@ function RoutineItem(props: {
 }
 
 export default function Routines() {
-  const [routineArray, setRoutineArray] = useState(initialRoutine);
+  const [routineArray, setRoutineArray] = useState(() =>
+    cloneDeep(initialRoutines)
+  );
   function moveItem(sourceItemId: number, targetBorderId: number) {
     if (sourceItemId === targetBorderId || sourceItemId + 1 === targetBorderId)
       return;

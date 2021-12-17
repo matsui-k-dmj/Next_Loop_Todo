@@ -4,7 +4,8 @@ import { format } from "date-fns";
 import ja from "date-fns/locale/ja";
 import { Rountine } from "models/model";
 
-import { routines as initialRoutine } from "models/psudo_data";
+import { initialRoutines } from "models/psudo_data";
+import cloneDeep from "lodash/cloneDeep";
 import { useRef, useState } from "react";
 
 import {
@@ -146,6 +147,7 @@ function RoutineItem(props: {
         onClick={() => {
           props.onCheckboxClick(props.i);
         }}
+        readOnly
       />
       <label htmlFor={props.routine.routineId} style={{ paddingLeft: "1rem" }}>
         {props.routine.name}
@@ -155,7 +157,9 @@ function RoutineItem(props: {
 }
 
 export default function Home() {
-  const [routineArray, setRoutineArray] = useState(initialRoutine);
+  const [routineArray, setRoutineArray] = useState(() =>
+    cloneDeep(initialRoutines)
+  );
 
   /** sortValueでソートしてから, チェックされてないものを上にする */
   function sortRoutines(routineArray: Rountine[]) {
