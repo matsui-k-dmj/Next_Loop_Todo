@@ -13,15 +13,21 @@ import {
   DropTargetMonitor,
   useDrag,
   useDrop,
+  XYCoord,
 } from "react-dnd";
 import { DnDType } from "lib/constants";
 
 const styles = {
+  list: css`
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  `,
   item: css`
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     padding: 0.5rem 1rem;
+    border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 
     &:hover {
@@ -29,33 +35,66 @@ const styles = {
     }
   `,
 
-  firstItem: css`
-    border-top: 1px solid #ddd;
-  `,
+  //   firstItem: css`
+  //     border-top: 1px solid #ddd;
+  //   `,
+
+  //   lastItem: css`
+  //     border-bottom: 1px solid #ddd;
+  //   `,
 
   dragged: css`
     opacity: 0.5;
   `,
-
-  isOver: css`
+  isOverTop: css`
+    border-top: 1px solid #111;
+  `,
+  isOverBottom: css`
     border-bottom: 1px solid #111;
   `,
 };
 
+function isCursorUpperHalf(
+  boundingRect: DOMRect,
+  cursorCoord: XYCoord
+): boolean {
+  const middle = boundingRect.top + boundingRect.height / 2;
+  return cursorCoord.y < middle;
+}
+
 function RoutineItem(props: {
   routine: Rountine;
   i: number;
+  length: number;
   moveItem: (sourceId: number, targetId: number) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [cursorY, setcursorY] = useState<number>();
 
   const [dropCollected, connectDrop] = useDrop({
     accept: DnDType.routine,
     collect(monitor: DropTargetMonitor) {
-      return { isOver: monitor.isOver() };
+      return {
+        isOver: monitor.isOver(),
+        cursorOffset: monitor.getClientOffset(),
+      };
     },
-    drop(item: { draggedId: number }) {
-      props.moveItem(item.draggedId, props.i + 1);
+    hover(item: any, monitor: DropTargetMonitor) {
+      setcursorY(monitor.getClientOffset()?.y);
+    },
+    drop(item: { draggedId: number }, monitor: DropTargetMonitor) {
+      const cursorOffset = monitor.getClientOffset();
+      let borderId = item.draggedId + 1;
+      if (ref.current != null && cursorOffset != null) {
+        if (
+          isCursorUpperHalf(ref.current.getBoundingClientRect(), cursorOffset)
+        ) {
+          borderId = props.i;
+        } else {
+          borderId = props.i + 1;
+        }
+      }
+      props.moveItem(item.draggedId, borderId);
     },
   });
 
@@ -69,15 +108,33 @@ function RoutineItem(props: {
     },
   });
   connectDrop(connectDrag(ref));
+
+  let isOverStyle = css``;
+  if (
+    dropCollected.isOver &&
+    ref.current != null &&
+    dropCollected.cursorOffset != null
+  ) {
+    if (
+      isCursorUpperHalf(
+        ref.current.getBoundingClientRect(),
+        dropCollected.cursorOffset
+      )
+    ) {
+      isOverStyle = styles.isOverTop;
+    } else {
+      isOverStyle = styles.isOverBottom;
+    }
+  }
+
   return (
     <div ref={ref}>
       <Link href={`routines/${props.routine.routineId}`}>
         <a
           css={[
             styles.item,
-            props.i === 0 && styles.firstItem,
             dragCollected.isDragging && styles.dragged,
-            dropCollected.isOver && styles.isOver,
+            dropCollected.isOver && isOverStyle,
           ]}
         >
           <div>{props.routine.name} </div>
@@ -131,16 +188,19 @@ export default function Routines() {
       <Link href="routines/new">
         <a>タスクを追加</a>
       </Link>
-      {routineArray.map((x, i) => {
-        return (
-          <RoutineItem
-            key={x.routineId}
-            routine={x}
-            i={i}
-            moveItem={moveItem}
-          ></RoutineItem>
-        );
-      })}
+      <div css={styles.list}>
+        {routineArray.map((x, i) => {
+          return (
+            <RoutineItem
+              key={x.routineId}
+              routine={x}
+              i={i}
+              length={routineArray.length}
+              moveItem={moveItem}
+            ></RoutineItem>
+          );
+        })}
+      </div>
     </>
   );
 }
