@@ -11,6 +11,7 @@ export type Rountine = {
     deleted: boolean,
     repeat: Repeat,
     subtaskes: Subtask[]
+    done?: boolean,
 }
 
 export type Subtask = {
@@ -28,15 +29,7 @@ export type Repeat = {
 
 export type DailyTodo = {
     date: Date,
-    tasks: Task[]
-}
-
-export type Task = {
-    routineId: string,
-    name: string,
-    sortValue: number,
-    done: boolean,
-    subtasks: Subtask[]
+    tasks: Rountine[]
 }
 
 export type Log = {
