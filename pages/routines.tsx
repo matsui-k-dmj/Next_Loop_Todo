@@ -35,14 +35,6 @@ const styles = {
     }
   `,
 
-  //   firstItem: css`
-  //     border-top: 1px solid #ddd;
-  //   `,
-
-  //   lastItem: css`
-  //     border-bottom: 1px solid #ddd;
-  //   `,
-
   dragged: css`
     opacity: 0.5;
   `,
@@ -69,18 +61,17 @@ function RoutineItem(props: {
   moveItem: (sourceId: number, targetId: number) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [cursorY, setcursorY] = useState<number>();
+  const [cursorY, setcursorY] = useState<XYCoord | null>();
 
   const [dropCollected, connectDrop] = useDrop({
     accept: DnDType.routine,
     collect(monitor: DropTargetMonitor) {
       return {
         isOver: monitor.isOver(),
-        cursorOffset: monitor.getClientOffset(),
       };
     },
     hover(item: any, monitor: DropTargetMonitor) {
-      setcursorY(monitor.getClientOffset()?.y);
+      setcursorY(monitor.getClientOffset());
     },
     drop(item: { draggedId: number }, monitor: DropTargetMonitor) {
       const cursorOffset = monitor.getClientOffset();
@@ -110,17 +101,8 @@ function RoutineItem(props: {
   connectDrop(connectDrag(ref));
 
   let isOverStyle = css``;
-  if (
-    dropCollected.isOver &&
-    ref.current != null &&
-    dropCollected.cursorOffset != null
-  ) {
-    if (
-      isCursorUpperHalf(
-        ref.current.getBoundingClientRect(),
-        dropCollected.cursorOffset
-      )
-    ) {
+  if (dropCollected.isOver && ref.current != null && cursorY != null) {
+    if (isCursorUpperHalf(ref.current.getBoundingClientRect(), cursorY)) {
       isOverStyle = styles.isOverTop;
     } else {
       isOverStyle = styles.isOverBottom;
