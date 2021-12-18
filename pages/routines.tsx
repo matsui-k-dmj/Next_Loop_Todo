@@ -18,6 +18,8 @@ import {
 import { DnDType } from "lib/constants";
 import cloneDeep from "lodash/cloneDeep";
 
+import { AiOutlinePlus } from "react-icons/ai";
+
 const styles = {
   list: css`
     margin-top: 1rem;
@@ -35,6 +37,15 @@ const styles = {
     &:hover {
       background-color: #f8f8f8;
     }
+  `,
+
+  addButton: css`
+    display: inline-block;
+    color: black;
+    text-decoration: none;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
   `,
 
   dragged: css`
@@ -178,7 +189,12 @@ export default function Routines() {
     <>
       <Navbar selectedFeature="routines"></Navbar>
       <Link href="routines/new">
-        <a>タスクを追加</a>
+        <a css={styles.addButton}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <AiOutlinePlus style={{ marginRight: "0.2rem" }} />
+            <span>タスクを追加</span>
+          </div>
+        </a>
       </Link>
       <div css={styles.list}>
         {routineArray.map((x, i) => {
