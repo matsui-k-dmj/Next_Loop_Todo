@@ -25,6 +25,7 @@ export type Repeat = {
     every: number,
     date: Date,
     dayOfWeeks?: (0 | 1 | 2 | 3 | 4 | 5 | 6)[], // 日曜が0
+    monthType?: "sameDay" | "sameDow"
 }
 
 export type DailyTodo = {

@@ -1,5 +1,10 @@
 import { Repeat } from "models/model";
-import { differenceInDays, differenceInWeeks, differenceInMonths } from "date-fns"
+import { differenceInDays, differenceInWeeks, differenceInMonths, getWeekOfMonth, startOfMonth, getDay } from "date-fns"
+
+export function nthDayOfWeek(date: Date) {
+    const firstDay = getDay(startOfMonth(date));
+    return getWeekOfMonth(date, { weekStartsOn: firstDay })
+}
 
 export function toRepeat(date: Date, repeat: Repeat): boolean {
     switch (repeat.type) {
@@ -21,9 +26,17 @@ export function toRepeat(date: Date, repeat: Repeat): boolean {
         case "month":
             const months = differenceInMonths(date, repeat.date)
             if (months % repeat.every === 0) {
-                if (date.getDate() === repeat.date.getDate()) {
-                    return true
+                if (repeat.monthType === "sameDay") {
+                    if (date.getDate() === repeat.date.getDate()) {
+                        return true
+                    }
                 }
+                else if (repeat.monthType === "sameDow") {
+                    if (date.getDay() === repeat.date.getDay() && nthDayOfWeek(date) === nthDayOfWeek(repeat.date)) {
+                        return true
+                    }
+                }
+
             }
             break
 

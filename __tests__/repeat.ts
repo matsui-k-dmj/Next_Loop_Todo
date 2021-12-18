@@ -1,10 +1,16 @@
-import { toRepeat } from "lib/repeat"
+import { toRepeat, nthDayOfWeek } from "lib/repeat"
 import { Repeat } from "models/model"
 import { addDays } from "date-fns";
 
 const startDate = new Date("2021,12,31") // 金曜日
 
 describe('toRepeat', () => {
+    it('nthDayOfWeek', () => {
+        expect(nthDayOfWeek(new Date("2021,12,7"))).toBe(1)
+        expect(nthDayOfWeek(new Date("2021,12,31"))).toBe(5)
+
+    })
+
     it('毎日', () => {
         const repeat: Repeat = {
             type: "day",
@@ -51,14 +57,29 @@ describe('toRepeat', () => {
         expect(toRepeat(new Date("2022,1,15"), repeat)).toBeTruthy(); // 次の次のの土曜日
     })
 
-    it('毎月', () => {
+    it('毎月同じ日', () => {
         const repeat: Repeat = {
             type: "month",
             every: 1,
             date: startDate,
+            monthType: "sameDay"
         }
         expect(toRepeat(startDate, repeat)).toBeTruthy() // 当日
         expect(toRepeat(addDays(startDate, 1), repeat)).toBeFalsy(); // 次の日
         expect(toRepeat(new Date("2022,1,31"), repeat)).toBeTruthy(); // 次の月
+    })
+
+    it('毎月同じ週の曜日', () => {
+        const repeat: Repeat = {
+            type: "month",
+            every: 1,
+            date: startDate,
+            monthType: "sameDow"
+        }
+        expect(toRepeat(startDate, repeat)).toBeTruthy() // 当日
+        expect(toRepeat(addDays(startDate, 1), repeat)).toBeFalsy(); // 次の日
+        expect(toRepeat(new Date("2022,1,28"), repeat)).toBeFalsy(); // 次の月の第4金曜
+        expect(toRepeat(new Date("2022,1,31"), repeat)).toBeFalsy(); // 次の月の同じ日
+        expect(toRepeat(new Date("2022,4,29"), repeat)).toBeTruthy(); // 第5金曜
     })
 });

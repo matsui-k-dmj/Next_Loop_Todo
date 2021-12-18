@@ -72,6 +72,7 @@ const hurikaeri: Rountine = {
         type: "month",
         every: 1,
         date: date,
+        monthType: "sameDay"
     }
 }
 
