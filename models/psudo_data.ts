@@ -1,5 +1,6 @@
 import { Rountine } from "./model"
 import { sort } from "lib/utils"
+import { subDays } from "date-fns"
 
 const date = new Date()
 
@@ -28,6 +29,20 @@ const kintore: Rountine = {
         type: "day",
         every: 2,
         date: date
+    }
+}
+
+// 2日ごと
+const kintore2: Rountine = {
+    routineId: "e931e101-1e9e-434f-993f-0a7b037d2ac2",
+    name: "筋トレ2",
+    sortValue: 100000,
+    deleted: false,
+    subtaskes: [],
+    repeat: {
+        type: "day",
+        every: 2,
+        date: subDays(date, 1)
     }
 }
 
@@ -77,5 +92,5 @@ const hurikaeri: Rountine = {
 }
 
 
-export const initialRoutines = sort([breakfast, kintore, shukkin, souji, hurikaeri],
+export const initialRoutines = sort([breakfast, kintore, kintore2, shukkin, souji, hurikaeri],
     x => x.sortValue)

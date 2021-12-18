@@ -17,6 +17,7 @@ import {
 } from "react-dnd";
 import { DnDType } from "lib/constants";
 import { sort } from "lib/utils";
+import { toRepeat } from "lib/repeat";
 
 const styles = {
   list: css`
@@ -157,8 +158,9 @@ function RoutineItem(props: {
 }
 
 export default function Home() {
+  const today = new Date();
   const [routineArray, setRoutineArray] = useState(() =>
-    cloneDeep(initialRoutines)
+    cloneDeep(initialRoutines.filter((x) => toRepeat(today, x.repeat)))
   );
 
   /** sortValueでソートしてから, チェックされてないものを上にする */
@@ -213,7 +215,7 @@ export default function Home() {
     <>
       <Navbar selectedFeature="todo"></Navbar>
       <div>
-        <h2>{format(new Date(), "M/d E", { locale: ja })}</h2>
+        <h2>{format(today, "M/d E", { locale: ja })}</h2>
         <div css={styles.list}>
           {routineArray.map((x, i) => {
             return (
