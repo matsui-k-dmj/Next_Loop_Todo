@@ -4,6 +4,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "test": "jest --watch",
     "format": "prettier --write pages/**/*.{js,ts,jsx,tsx}",
     "check-format": "prettier --check pages/**/*.{js,ts,jsx,tsx}",
     "storybook": "start-storybook -p 6006",
@@ -27,12 +28,15 @@
   "devDependencies": {
     "@babel/core": "^7.13.10",
     "@emotion/babel-plugin": "^11.7.1",
+    "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.178",
     "@types/react": "^17.0.37",
     "babel-loader": "^8.2.3",
     "eslint": "8.4.1",
     "eslint-config-next": "12.0.7",
+    "jest": "^27.4.5",
     "prettier": "2.5.1",
+    "ts-jest": "^27.1.2",
     "typescript": "^4.5.4"
   }
 }
