@@ -30,6 +30,7 @@ const styles = {
   `,
 
   repeatContainer: css`
+    margin-top: 0.5rem;
     border-radius: 5px;
 
     &:hover {
