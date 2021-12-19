@@ -43,7 +43,7 @@ const styles = {
     display: inline-block;
     color: black;
     text-decoration: none;
-    padding: 0.5rem;
+    padding: 0.3rem;
     border: 1px solid #ddd;
     border-radius: 5px;
   `,

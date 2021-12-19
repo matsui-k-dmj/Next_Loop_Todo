@@ -1,4 +1,5 @@
 import { Repeat } from "models/model";
+import { sort } from "lib/utils";
 const dowTexts = "日月火水木金土";
 
 export default function RepeatText({ repeat }: { repeat: Repeat }) {
@@ -12,11 +13,13 @@ export default function RepeatText({ repeat }: { repeat: Repeat }) {
         }
       case "week":
         if (repeat.dayOfWeeks == null) break;
-        const text = repeat.dayOfWeeks.map((i) => dowTexts[i]).join(" ");
+        const text = sort(repeat.dayOfWeeks, (x) => x)
+          .map((i) => dowTexts[i])
+          .join(" ");
         if (repeat.every == 1) {
-          return text;
+          return `毎週　${text}`;
         } else {
-          return `${repeat.every}週毎 ${text}`;
+          return `${repeat.every}週毎　${text}`;
         }
       case "month":
         if (repeat.every == 1) {
