@@ -1,5 +1,9 @@
 import { Repeat } from "models/model";
 import { sort } from "lib/utils";
+import { format } from "date-fns";
+import { ja } from "date-fns/locale";
+import { nthDayOfWeek } from "lib/repeat";
+
 const dowTexts = "日月火水木金土";
 
 export default function RepeatText({ repeat }: { repeat: Repeat }) {
@@ -17,15 +21,30 @@ export default function RepeatText({ repeat }: { repeat: Repeat }) {
           .map((i) => dowTexts[i])
           .join(" ");
         if (repeat.every == 1) {
-          return `毎週　${text}`;
+          return `毎週 ${text}`;
         } else {
-          return `${repeat.every}週毎　${text}`;
+          return `${repeat.every}週毎 ${text}`;
         }
       case "month":
-        if (repeat.every == 1) {
-          return "毎月";
+        let everyText = "";
+        if (repeat.every === 1) {
+          everyText = "毎月";
         } else {
-          return `${repeat.every}カ月毎`;
+          everyText = `${repeat.every}カ月毎`;
+        }
+
+        if (repeat.monthType === "sameDay") {
+          return `${everyText} ${format(repeat.date, "d日", {
+            locale: ja,
+          })}`;
+        } else if (repeat.monthType === "sameDow") {
+          return `${everyText} ${format(
+            repeat.date,
+            `第${nthDayOfWeek(repeat.date)}E曜日`,
+            {
+              locale: ja,
+            }
+          )}`;
         }
     }
   };

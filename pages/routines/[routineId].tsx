@@ -8,7 +8,7 @@ import { ChangeEvent, useState } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import RepeatText from "components/RepeatText";
 import { format, getDay } from "date-fns";
-import { DOW } from "models/model";
+import { DOW, Repeat } from "models/model";
 
 const styles = {
   backIcon: css`
@@ -99,6 +99,48 @@ function SelectDayOfWeeks(props: {
   );
 }
 
+function RadioMonthType(props: {
+  repeat: Repeat;
+  onMonthTypeChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}) {
+  const sameDayRepeat = { ...props.repeat };
+  sameDayRepeat.monthType = "sameDay";
+  const sameDowRepeat = { ...props.repeat };
+  sameDowRepeat.monthType = "sameDow";
+  console.log(props.repeat.monthType);
+  return (
+    <>
+      <div>
+        <label htmlFor="sameDay">
+          <input
+            id="sameDay"
+            type="radio"
+            name="monthType"
+            value="sameDay"
+            checked={props.repeat.monthType === "sameDay"}
+            onChange={props.onMonthTypeChange}
+          />
+          <RepeatText repeat={sameDayRepeat}></RepeatText>
+        </label>
+      </div>
+
+      <div style={{ marginTop: "0.5rem" }}>
+        <label htmlFor="sameDow">
+          <input
+            id="sameDow"
+            type="radio"
+            name="monthType"
+            value="sameDow"
+            checked={props.repeat.monthType === "sameDow"}
+            onChange={props.onMonthTypeChange}
+          />
+          <RepeatText repeat={sameDowRepeat}></RepeatText>
+        </label>
+      </div>
+    </>
+  );
+}
+
 export default function RoutineDetail() {
   const router = useRouter();
   const { routineId } = router.query;
@@ -109,7 +151,6 @@ export default function RoutineDetail() {
   function onChage(
     event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) {
-    event.preventDefault();
     if (routine == null) return;
     const newRoutine = cloneDeep(routine);
     const value = event.target.value;
@@ -123,6 +164,8 @@ export default function RoutineDetail() {
       case "date":
         newRoutine.repeat.date = new Date(value);
         break;
+      case "monthType":
+        newRoutine.repeat.monthType = value as "sameDay" | "sameDow";
     }
     setRoutine(newRoutine);
   }
@@ -220,7 +263,14 @@ export default function RoutineDetail() {
                   onDowChange={onDowChange}
                 ></SelectDayOfWeeks>
               )}
-            {routine.repeat.type === "month" && <div>months</div>}
+            {routine.repeat.type === "month" && (
+              <div>
+                <RadioMonthType
+                  repeat={routine.repeat}
+                  onMonthTypeChange={onChage}
+                ></RadioMonthType>
+              </div>
+            )}
           </div>
         </details>
       </div>
