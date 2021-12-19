@@ -40,7 +40,7 @@ export default function RepeatText({ repeat }: { repeat: Repeat }) {
         } else if (repeat.monthType === "sameDow") {
           return `${everyText} ${format(
             repeat.date,
-            `第${nthDayOfWeek(repeat.date)}E曜日`,
+            `第${nthDayOfWeek(repeat.date)} E曜日`,
             {
               locale: ja,
             }

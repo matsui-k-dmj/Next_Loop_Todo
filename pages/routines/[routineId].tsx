@@ -30,15 +30,23 @@ const styles = {
   `,
 
   repeatContainer: css`
-    margin-left: 0.5rem;
+    border-radius: 5px;
+
+    &:hover {
+      outline: 2px solid #ddd;
+    }
   `,
 
   repeatSummary: css`
-    margin-top: 0.5rem;
+    padding: 0.5rem;
   `,
 
   repeatContents: css`
-    margin: 1rem;
+    padding: 1rem;
+  `,
+
+  repeatContentDetails: css`
+    margin-top: 1rem;
   `,
 
   every: css`
@@ -51,7 +59,7 @@ const styles = {
   `,
 
   dateContainer: css`
-    margin: 1rem 0;
+    margin-top: 1rem;
   `,
 
   dowContainer: css`
@@ -71,6 +79,11 @@ const styles = {
     &:hover {
       background-color: #ccc;
     }
+  `,
+
+  monthTypeText: css`
+    display: inline-block;
+    margin-left: 0.3rem;
   `,
 };
 
@@ -120,7 +133,9 @@ function RadioMonthType(props: {
             checked={props.repeat.monthType === "sameDay"}
             onChange={props.onMonthTypeChange}
           />
-          <RepeatText repeat={sameDayRepeat}></RepeatText>
+          <div css={styles.monthTypeText}>
+            <RepeatText repeat={sameDayRepeat}></RepeatText>
+          </div>
         </label>
       </div>
 
@@ -134,7 +149,9 @@ function RadioMonthType(props: {
             checked={props.repeat.monthType === "sameDow"}
             onChange={props.onMonthTypeChange}
           />
-          <RepeatText repeat={sameDowRepeat}></RepeatText>
+          <div css={styles.monthTypeText}>
+            <RepeatText repeat={sameDowRepeat}></RepeatText>
+          </div>
         </label>
       </div>
     </>
@@ -258,13 +275,15 @@ export default function RoutineDetail() {
             </div>
             {routine.repeat.type === "week" &&
               routine.repeat.dayOfWeeks != null && (
-                <SelectDayOfWeeks
-                  dayOfWeeks={routine.repeat.dayOfWeeks}
-                  onDowChange={onDowChange}
-                ></SelectDayOfWeeks>
+                <div css={styles.repeatContentDetails}>
+                  <SelectDayOfWeeks
+                    dayOfWeeks={routine.repeat.dayOfWeeks}
+                    onDowChange={onDowChange}
+                  ></SelectDayOfWeeks>
+                </div>
               )}
             {routine.repeat.type === "month" && (
-              <div>
+              <div css={styles.repeatContentDetails}>
                 <RadioMonthType
                   repeat={routine.repeat}
                   onMonthTypeChange={onChage}
