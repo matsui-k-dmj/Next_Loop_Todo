@@ -4,6 +4,8 @@ export type DataOfAUser = {
     logs: Log[]
 }
 
+export type DOW = 0 | 1 | 2 | 3 | 4 | 5 | 6
+
 export type Rountine = {
     routineId: string,
     name: string,
@@ -24,7 +26,7 @@ export type Repeat = {
     type: "day" | "week" | "month",
     every: number,
     date: Date,
-    dayOfWeeks?: (0 | 1 | 2 | 3 | 4 | 5 | 6)[], // 日曜が0
+    dayOfWeeks?: DOW[], // 日曜が0
     monthType?: "sameDay" | "sameDow"
 }
 

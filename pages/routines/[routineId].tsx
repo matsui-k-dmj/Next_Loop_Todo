@@ -8,7 +8,7 @@ import { ChangeEvent, useState } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import RepeatText from "components/RepeatText";
 import { format, getDay } from "date-fns";
-import { Repeat } from "models/model";
+import { DOW } from "models/model";
 
 const styles = {
   backIcon: css`
@@ -75,8 +75,8 @@ const styles = {
 };
 
 function SelectDayOfWeeks(props: {
-  dayOfWeeks: (0 | 1 | 2 | 3 | 4 | 5 | 6)[];
-  onDowChange: (i: 0 | 1 | 2 | 3 | 4 | 5 | 6) => void;
+  dayOfWeeks: DOW[];
+  onDowChange: (i: DOW) => void;
 }) {
   const dowLabels = "日月火水木金土";
   return (
@@ -86,11 +86,10 @@ function SelectDayOfWeeks(props: {
           <div
             css={[
               styles.dowItem,
-              props.dayOfWeeks.includes(i as 0 | 1 | 2 | 3 | 4 | 5 | 6) &&
-                styles.dowItemSelected,
+              props.dayOfWeeks.includes(i as DOW) && styles.dowItemSelected,
             ]}
             key={label}
-            onClick={() => props.onDowChange(i as 0 | 1 | 2 | 3 | 4 | 5 | 6)}
+            onClick={() => props.onDowChange(i as DOW)}
           >
             {label}
           </div>
@@ -155,7 +154,7 @@ export default function RoutineDetail() {
     setRoutine(newRoutine);
   }
 
-  function onDowChange(i: 0 | 1 | 2 | 3 | 4 | 5 | 6) {
+  function onDowChange(i: DOW) {
     if (routine == null) return;
     const newRoutine = cloneDeep(routine);
     if (newRoutine.repeat.dayOfWeeks == null) {
