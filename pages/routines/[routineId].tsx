@@ -106,51 +106,38 @@ export default function RoutineDetail() {
     cloneDeep(initialRoutines.find((x) => x.routineId === routineId))
   );
 
-  function onNameChage(event: ChangeEvent<HTMLInputElement>) {
+  function onChage(
+    event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+  ) {
     event.preventDefault();
     if (routine == null) return;
-    const newRoutine = { ...routine, name: event.target.value };
-    setRoutine(newRoutine);
-  }
-
-  function onEveryChage(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    if (routine == null) return;
-    const newRoutine = {
-      ...routine,
-      repeat: { ...routine.repeat, every: parseInt(event.target.value) },
-    };
+    const newRoutine = cloneDeep(routine);
+    const value = event.target.value;
+    switch (event.target.name) {
+      case "name":
+        newRoutine.name = value;
+        break;
+      case "every":
+        newRoutine.repeat.every = parseInt(value);
+        break;
+      case "date":
+        newRoutine.repeat.date = new Date(value);
+        break;
+    }
     setRoutine(newRoutine);
   }
 
   function onTypeChange(event: ChangeEvent<HTMLSelectElement>) {
     event.preventDefault();
     if (routine == null) return;
-    if (event.target.value === "week" && !routine.repeat.dayOfWeeks) {
-      routine.repeat.dayOfWeeks = [getDay(routine.repeat.date)];
-    } else if (event.target.value === "month" && !routine.repeat.monthType) {
-      routine.repeat.monthType = "sameDay";
-    }
-    const newRoutine = {
-      ...routine,
-      repeat: {
-        ...routine.repeat,
-        type: event.target.value as "day" | "week" | "month",
-      },
-    };
-    setRoutine(newRoutine);
-  }
+    const newRoutine = cloneDeep(routine);
 
-  function onDateChange(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    if (routine == null) return;
-    const newRoutine = {
-      ...routine,
-      repeat: {
-        ...routine.repeat,
-        date: new Date(event.target.value),
-      },
-    };
+    if (event.target.value === "week" && !routine.repeat.dayOfWeeks) {
+      newRoutine.repeat.dayOfWeeks = [getDay(routine.repeat.date)];
+    } else if (event.target.value === "month" && !routine.repeat.monthType) {
+      newRoutine.repeat.monthType = "sameDay";
+    }
+    newRoutine.repeat.type = event.target.value as "day" | "week" | "month";
     setRoutine(newRoutine);
   }
 
@@ -185,10 +172,11 @@ export default function RoutineDetail() {
       <div>
         <input
           type="input"
+          name="name"
           value={routine.name}
           read-only
           css={styles.name}
-          onChange={onNameChage}
+          onChange={onChage}
         />
         <details css={styles.repeatContainer}>
           <summary css={styles.repeatSummary}>
@@ -201,12 +189,14 @@ export default function RoutineDetail() {
               value={routine.repeat.every}
               css={styles.every}
               read-only
-              onChange={onEveryChage}
+              onChange={onChage}
+              name="every"
             />
             <select
               value={routine.repeat.type}
               onChange={onTypeChange}
               css={styles.typeSelect}
+              name="type"
             >
               <option value="day">日</option>
               <option value="week">週</option>
@@ -217,8 +207,9 @@ export default function RoutineDetail() {
               開始日:
               <input
                 type="date"
+                name="date"
                 value={format(routine.repeat.date, "yyyy-MM-dd")}
-                onChange={onDateChange}
+                onChange={onChage}
                 style={{ marginLeft: "0.5rem" }}
               />
             </div>
