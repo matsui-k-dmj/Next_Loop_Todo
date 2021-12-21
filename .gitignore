@@ -41,3 +41,5 @@ stories/
 *.mp4
 
 *.log
+
+.vscode/
