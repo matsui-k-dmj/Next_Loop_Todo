@@ -12,12 +12,14 @@
     "lint": "next lint",
     "ci": "npm run check-format && npm run lint && npm run build",
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "fbe": "firebase emulators:start"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "cypress": "^9.1.1",
     "date-fns": "^2.27.0",
+    "firebase": "^9.6.1",
     "lodash.clonedeep": "^4.5.0",
     "next": "latest",
     "react": "^17.0.2",
