@@ -1,9 +1,3 @@
-export type DataOfAUser = {
-    routines: Rountine[],
-    todos: DailyTodo[],
-    logs: Log[]
-}
-
 export type DOW = 0 | 1 | 2 | 3 | 4 | 5 | 6
 
 export type Rountine = {
@@ -30,14 +24,18 @@ export type Repeat = {
     monthType?: "sameDay" | "sameDow"
 }
 
-export type DailyTodo = {
-    date: Date,
-    tasks: Rountine[]
+export type Task = {
+    routineId: string,
+    sortValue: number,
+    done: boolean,
 }
 
-export type Log = {
-    routineId: string,
-    year_month: {
-        [key: string]: number[] // 2022_4: [1, 5, 31]
+export type TaskList = {
+    [routineId: string]: Task
+}
+
+export type Todo = {
+    [date: string]: {
+        tasks: TaskList
     }
 }
