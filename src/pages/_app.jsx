@@ -2,6 +2,8 @@
 import React from "react";
 import Head from "next/head";
 import "../styles/reset.css";
+import "../styles/global.css";
+
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 import { css } from "@emotion/react";
