@@ -6,7 +6,7 @@ import { Rountine } from "models/model";
 
 import { initialRoutines } from "models/psudo_data";
 import cloneDeep from "lodash/cloneDeep";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   DragSourceMonitor,
@@ -18,6 +18,7 @@ import {
 import { DnDType } from "lib/constants";
 import { sort } from "lib/utils";
 import { toRepeat } from "lib/repeat";
+import { useAuth } from "contexts/AuthContext";
 
 const styles = {
   list: css`

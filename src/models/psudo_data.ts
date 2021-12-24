@@ -1,6 +1,6 @@
 import { Rountine } from "./model"
 import { sort } from "lib/utils"
-import { subDays } from "date-fns"
+import { getDay, subDays } from "date-fns"
 
 const date = new Date()
 
@@ -61,7 +61,7 @@ const shukkin: Rountine = {
     }
 }
 
-// 2週毎 土曜日
+// 2週毎
 const souji: Rountine = {
     routineId: "665eeeed-0ef4-4e7a-99b5-b2908bf1683f",
     name: "掃除",
@@ -72,7 +72,7 @@ const souji: Rountine = {
         type: "week",
         every: 2,
         date: date,
-        dayOfWeeks: [6]
+        dayOfWeeks: [getDay(date)]
     }
 }
 
@@ -88,6 +88,21 @@ const hurikaeri: Rountine = {
         every: 1,
         date: date,
         monthType: "sameDay"
+    }
+}
+
+// 毎月同じ曜日
+const hanseikai: Rountine = {
+    routineId: "hanseikai",
+    name: "反省会",
+    sortValue: 400000,
+    deleted: false,
+    subtaskes: [],
+    repeat: {
+        type: "month",
+        every: 1,
+        date: date,
+        monthType: "sameDow"
     }
 }
 

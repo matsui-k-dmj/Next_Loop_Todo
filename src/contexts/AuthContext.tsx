@@ -8,11 +8,19 @@ import {
 import { auth } from "lib/firebaseConfig";
 import { onAuthStateChanged, signInAnonymously, User } from "@firebase/auth";
 
+import { db } from "lib/firebaseConfig";
+import { ref as fbRef, set as fbSet } from "firebase/database";
+import { initialRoutines } from "models/initialData";
+
 interface AuthValue {
   currentUser: User | null;
 }
 
 const AuthContext = createContext({} as AuthValue); // 初期値はAuthProviderで直ぐに入れるのでasでも大丈夫
+
+function initilizeData(uid: string) {
+  fbSet(fbRef(db, `users/${uid}/routines`), initialRoutines);
+}
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -37,8 +45,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         console.log("No User!");
         signInAnonymously(auth)
-          .then(() => {
+          .then((userCredential) => {
             console.log("signInAnonymously");
+            initilizeData(userCredential.user.uid);
           })
           .catch((error) => {
             console.error("signInAnonymously");
