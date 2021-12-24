@@ -1,7 +1,7 @@
-import { Rountine } from "./model"
-import { subDays } from "date-fns"
+import { Routine } from "./model"
+import { format, subDays } from "date-fns"
+const date = format(new Date(), "yyyy-MM-dd")
 
-const date = new Date()
 
 export const initialRoutines = {
     breakfast: {
@@ -37,7 +37,7 @@ export const initialRoutines = {
         repeat: {
             type: "day",
             every: 2,
-            date: subDays(date, 1)
+            date: subDays(new Date(date), 1)
         }
     },
     shukkin: {

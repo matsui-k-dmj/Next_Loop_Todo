@@ -1,8 +1,11 @@
 import { toRepeat, nthDayOfWeek } from "lib/repeat"
 import { Repeat } from "models/model"
-import { addDays } from "date-fns";
+import { format, addDays } from "date-fns";
 
 const startDate = new Date("2021,12,31") // 金曜日
+
+const startDateStr = format(startDate, "yyyy,MM,dd")
+
 
 describe('toRepeat', () => {
     it('nthDayOfWeek', () => {
@@ -15,7 +18,7 @@ describe('toRepeat', () => {
         const repeat: Repeat = {
             type: "day",
             every: 1,
-            date: startDate
+            date: startDateStr
         }
         expect(toRepeat(startDate, repeat)).toBeTruthy(); // 当日
         expect(toRepeat(addDays(startDate, 1), repeat)).toBeTruthy(); // 次の日
@@ -25,7 +28,7 @@ describe('toRepeat', () => {
         const repeat: Repeat = {
             type: "day",
             every: 2,
-            date: startDate
+            date: startDateStr
         }
         expect(toRepeat(startDate, repeat)).toBeTruthy(); // 当日
         expect(toRepeat(addDays(startDate, 1), repeat)).toBeFalsy(); // 次の日
@@ -36,7 +39,7 @@ describe('toRepeat', () => {
         const repeat: Repeat = {
             type: "week",
             every: 1,
-            date: startDate,
+            date: startDateStr,
             dayOfWeeks: [1, 2, 3, 4, 5]
         }
         expect(toRepeat(startDate, repeat)).toBeTruthy(); // 当日
@@ -48,7 +51,7 @@ describe('toRepeat', () => {
         const repeat: Repeat = {
             type: "week",
             every: 2,
-            date: startDate,
+            date: startDateStr,
             dayOfWeeks: [6]
         }
         expect(toRepeat(startDate, repeat)).toBeFalsy(); // 当日は金曜なので false
@@ -61,7 +64,7 @@ describe('toRepeat', () => {
         const repeat: Repeat = {
             type: "month",
             every: 1,
-            date: startDate,
+            date: startDateStr,
             monthType: "sameDay"
         }
         expect(toRepeat(startDate, repeat)).toBeTruthy() // 当日
@@ -73,7 +76,7 @@ describe('toRepeat', () => {
         const repeat: Repeat = {
             type: "month",
             every: 1,
-            date: startDate,
+            date: startDateStr,
             monthType: "sameDow"
         }
         expect(toRepeat(startDate, repeat)).toBeTruthy() // 当日

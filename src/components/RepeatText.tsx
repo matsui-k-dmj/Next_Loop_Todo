@@ -33,18 +33,16 @@ export default function RepeatText({ repeat }: { repeat: Repeat }) {
           everyText = `${repeat.every}カ月毎`;
         }
 
+        const date = new Date(repeat.date);
+
         if (repeat.monthType === "sameDay") {
-          return `${everyText} ${format(repeat.date, "d日", {
+          return `${everyText} ${format(date, "d日", {
             locale: ja,
           })}`;
         } else if (repeat.monthType === "sameDow") {
-          return `${everyText} ${format(
-            repeat.date,
-            `第${nthDayOfWeek(repeat.date)} E曜日`,
-            {
-              locale: ja,
-            }
-          )}`;
+          return `${everyText} ${format(date, `第${nthDayOfWeek(date)} E曜日`, {
+            locale: ja,
+          })}`;
         }
     }
   };

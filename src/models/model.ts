@@ -1,6 +1,6 @@
 export type DOW = 0 | 1 | 2 | 3 | 4 | 5 | 6
 
-export type Rountine = {
+export type Routine = {
     routineId: string,
     name: string,
     sortValue: number,
@@ -19,7 +19,7 @@ export type Subtask = {
 export type Repeat = {
     type: "day" | "week" | "month",
     every: number,
-    date: Date,
+    date: string,
     dayOfWeeks?: DOW[], // 日曜が0
     monthType?: "sameDay" | "sameDow"
 }

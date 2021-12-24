@@ -1,12 +1,11 @@
 import Link from "next/link";
 import Navbar from "components/Navbar";
 
-import { initialRoutines } from "models/psudo_data";
 import RepeatText from "components/RepeatText";
 
 import { css } from "@emotion/react";
-import { useState, useRef } from "react";
-import { Rountine } from "models/model";
+import { useState, useRef, useEffect } from "react";
+import { Routine } from "models/model";
 
 import {
   DragSourceMonitor,
@@ -16,9 +15,14 @@ import {
   XYCoord,
 } from "react-dnd";
 import { DnDType } from "lib/constants";
-import cloneDeep from "lodash/cloneDeep";
 
 import { AiOutlinePlus } from "react-icons/ai";
+import { useAuth } from "contexts/AuthContext";
+import { onChildAdded, onChildChanged } from "firebase/database";
+import { db } from "lib/firebaseConfig";
+import { ref as fbRef, set as fbSet } from "firebase/database";
+
+import { sort } from "lib/utils";
 
 const styles = {
   list: css`
@@ -68,7 +72,7 @@ function isCursorUpperHalf(
 }
 
 function RoutineItem(props: {
-  routine: Rountine;
+  routine: Routine;
   i: number;
   length: number;
   moveItem: (sourceId: number, targetId: number) => void;
@@ -149,9 +153,36 @@ function RoutineItem(props: {
 }
 
 export default function Routines() {
-  const [routineArray, setRoutineArray] = useState(() =>
-    cloneDeep(initialRoutines)
-  );
+  const [routineArray, setRoutineArray] = useState<Routine[]>([]);
+
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (currentUser == null) return;
+    const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
+    const unsuonChildAdded = onChildAdded(routinesRef, (data) => {
+      setRoutineArray((routineArray) =>
+        sort(routineArray.concat(data.val()), (x) => x.sortValue)
+      );
+    });
+    const unsuOnChildChanged = onChildChanged(routinesRef, (data) => {
+      console.log({ onChildChanged: data, key: data.key, value: data.val() });
+      setRoutineArray((routineArray) => {
+        return sort(
+          routineArray
+            .filter((routine) => routine.routineId !== data.key)
+            .concat(data.val()),
+          (x) => x.sortValue
+        );
+      });
+    });
+
+    return () => {
+      unsuOnChildChanged();
+      unsuonChildAdded();
+    };
+  }, [currentUser]);
+
   function moveItem(sourceItemId: number, targetBorderId: number) {
     if (sourceItemId === targetBorderId || sourceItemId + 1 === targetBorderId)
       return;

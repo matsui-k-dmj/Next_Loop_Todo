@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import Navbar from "components/Navbar";
 import { format } from "date-fns";
 import ja from "date-fns/locale/ja";
-import { Rountine } from "models/model";
+import { Routine } from "models/model";
 
 import { initialRoutines } from "models/psudo_data";
 import cloneDeep from "lodash/cloneDeep";
@@ -61,7 +61,7 @@ function isCursorUpperHalf(
 }
 
 function RoutineItem(props: {
-  routine: Rountine;
+  routine: Routine;
   i: number;
   moveItem: (sourceId: number, targetId: number) => void;
   onCheckboxClick: (i: number) => void;
@@ -165,7 +165,7 @@ export default function Home() {
   );
 
   /** sortValueでソートしてから, チェックされてないものを上にする */
-  function sortRoutines(routineArray: Rountine[]) {
+  function sortRoutines(routineArray: Routine[]) {
     let sorted = sort(routineArray, (x) => x.sortValue);
     const uncheckedRoutines = sorted.filter((x) => !x.done);
     const checkedRoutines = sorted.filter((x) => x.done);
