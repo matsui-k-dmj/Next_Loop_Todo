@@ -121,7 +121,6 @@ function RadioMonthType(props: {
   sameDayRepeat.monthType = "sameDay";
   const sameDowRepeat = { ...props.repeat };
   sameDowRepeat.monthType = "sameDow";
-  console.log(props.repeat.monthType);
   return (
     <>
       <div>

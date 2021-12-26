@@ -17,12 +17,19 @@ import { DnDType } from "lib/constants";
 
 import { AiOutlinePlus } from "react-icons/ai";
 import { useAuth } from "contexts/AuthContext";
-import { onChildAdded, onChildChanged } from "firebase/database";
+import {
+  ref as fbRef,
+  set as fbSet,
+  onChildAdded,
+  onChildChanged,
+  push as fbPush,
+} from "firebase/database";
 import { db } from "lib/firebaseConfig";
-import { ref as fbRef, set as fbSet } from "firebase/database";
+import {} from "firebase/database";
 
 import { sort } from "lib/utils";
 import RoutineDetail from "components/RoutineDetail";
+import { format } from "date-fns";
 
 const styles = {
   list: css`
@@ -196,13 +203,44 @@ export default function Routines() {
     };
   }, [currentUser]);
 
+  function fbSetNewRoutine(newRoutine: Routine) {
+    if (currentUser == null) return;
+    fbSet(
+      fbRef(db, `users/${currentUser.uid}/routines/${newRoutine.routineId}`),
+      newRoutine
+    );
+  }
+
+  function createNewRoutine() {
+    if (currentUser == null) return;
+    const newRoutineRef = fbPush(
+      fbRef(db, `users/${currentUser.uid}/routines`)
+    );
+    const initialRoutine: Routine = {
+      routineId: newRoutineRef.key as string,
+      name: "",
+      sortValue: routineArray[0].sortValue - 100000,
+      deleted: false,
+      subtaskes: [],
+      repeat: {
+        type: "day",
+        every: 1,
+        date: format(new Date(), "yyyy-MM-dd"),
+      },
+    };
+
+    setSelectedRoutineId(initialRoutine.routineId);
+    setShowDetail(true);
+    fbSetNewRoutine(initialRoutine);
+  }
+
   function moveItem(sourceItemId: number, targetBorderId: number) {
     if (sourceItemId === targetBorderId || sourceItemId + 1 === targetBorderId)
       return;
 
     // 並べ変え
     const _routineArray = routineArray.concat();
-    const itemMoved = _routineArray[sourceItemId];
+    const movedRoutine = _routineArray[sourceItemId];
 
     // sortValueの更新
     let sortValue = 0;
@@ -220,14 +258,15 @@ export default function Routines() {
           2
       );
     }
-    itemMoved.sortValue = sortValue;
+    movedRoutine.sortValue = sortValue;
 
     _routineArray.splice(sourceItemId, 1); // source を 削除
     if (targetBorderId > sourceItemId) {
       targetBorderId -= 1;
     }
-    _routineArray.splice(targetBorderId, 0, itemMoved);
+    _routineArray.splice(targetBorderId, 0, movedRoutine);
     setRoutineArray(_routineArray);
+    fbSetNewRoutine(movedRoutine);
   }
 
   function selectItem(routineId: string) {
@@ -256,6 +295,7 @@ export default function Routines() {
                 (x) => x.sortValue
               );
             });
+            fbSetNewRoutine(newRoutine);
           }}
           closeDetail={() => {
             setShowDetail(false);
@@ -270,7 +310,7 @@ export default function Routines() {
       <Navbar selectedFeature="routines"></Navbar>
       <div style={{ display: "flex" }}>
         <div style={{ flex: "1 1 auto" }}>
-          <button css={styles.addButton}>
+          <button css={styles.addButton} onClick={createNewRoutine}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <AiOutlinePlus style={{ marginRight: "0.2rem" }} />
               <span>タスクを追加</span>

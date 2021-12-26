@@ -31,19 +31,19 @@ export const initialRoutines = {
     kintore2: {
         routineId: "kintore2",
         name: "筋トレ2",
-        sortValue: 100000,
+        sortValue: 200000,
         deleted: false,
         subtaskes: [],
         repeat: {
             type: "day",
             every: 2,
-            date: subDays(new Date(date), 1)
+            date: format(subDays(new Date(date), 1), "yyyy-MM-dd")
         }
     },
     shukkin: {
         routineId: "shukkin",
         name: "出勤だあああああああああああああああああああああああ",
-        sortValue: 200000,
+        sortValue: 300000,
         deleted: false,
         subtaskes: [],
         repeat: {
@@ -56,7 +56,7 @@ export const initialRoutines = {
     souji: {
         routineId: "souji",
         name: "掃除",
-        sortValue: 300000,
+        sortValue: 400000,
         deleted: false,
         subtaskes: [],
         repeat: {
@@ -69,7 +69,7 @@ export const initialRoutines = {
     hurikaeri: {
         routineId: "hurikaeri",
         name: "振り返り",
-        sortValue: 400000,
+        sortValue: 500000,
         deleted: false,
         subtaskes: [],
         repeat: {
@@ -82,7 +82,7 @@ export const initialRoutines = {
     hanseikai: {
         routineId: "hanseikai",
         name: "反省会",
-        sortValue: 400000,
+        sortValue: 600000,
         deleted: false,
         subtaskes: [],
         repeat: {
