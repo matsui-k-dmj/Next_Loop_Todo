@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Navbar from "components/Navbar";
 
 import RepeatText from "components/RepeatText";
@@ -23,6 +22,7 @@ import { db } from "lib/firebaseConfig";
 import { ref as fbRef, set as fbSet } from "firebase/database";
 
 import { sort } from "lib/utils";
+import RoutineDetail from "components/RoutineDetail";
 
 const styles = {
   list: css`
@@ -46,6 +46,7 @@ const styles = {
   addButton: css`
     display: inline-block;
     color: black;
+    background-color: #f8f8f8;
     text-decoration: none;
     padding: 0.3rem;
     border: 1px solid #ddd;
@@ -60,6 +61,13 @@ const styles = {
   `,
   isOverBottom: css`
     border-bottom: 1px solid #111;
+  `,
+
+  routineDetail: css`
+    flex: 0 0 22rem;
+    margin-left: 1rem;
+    padding-left: 0.5rem;
+    border-left: 2px solid #ddd;
   `,
 };
 
@@ -76,6 +84,7 @@ function RoutineItem(props: {
   i: number;
   length: number;
   moveItem: (sourceId: number, targetId: number) => void;
+  selectItem: (routineId: string) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [cursorY, setcursorY] = useState<XYCoord | null>();
@@ -128,44 +137,47 @@ function RoutineItem(props: {
 
   return (
     <div ref={ref}>
-      <Link href={`routines/${props.routine.routineId}`}>
-        <a
-          css={[
-            styles.item,
-            dragCollected.isDragging && styles.dragged,
-            dropCollected.isOver && isOverStyle,
-          ]}
+      <a
+        css={[
+          styles.item,
+          dragCollected.isDragging && styles.dragged,
+          dropCollected.isOver && isOverStyle,
+        ]}
+        onClick={() => {
+          props.selectItem(props.routine.routineId);
+        }}
+      >
+        <div>{props.routine.name} </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            flex: "1 0 auto",
+          }}
         >
-          <div>{props.routine.name} </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              flex: "1 0 auto",
-            }}
-          >
-            <RepeatText repeat={props.routine.repeat}></RepeatText>
-          </div>
-        </a>
-      </Link>
+          <RepeatText repeat={props.routine.repeat}></RepeatText>
+        </div>
+      </a>
     </div>
   );
 }
 
 export default function Routines() {
   const [routineArray, setRoutineArray] = useState<Routine[]>([]);
+  const [showDetail, setShowDetail] = useState(false);
+  const [selectedRoutineId, setSelectedRoutineId] = useState<string>();
 
   const { currentUser } = useAuth();
 
   useEffect(() => {
     if (currentUser == null) return;
     const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
-    const unsuonChildAdded = onChildAdded(routinesRef, (data) => {
+    const unsubOnChildAdded = onChildAdded(routinesRef, (data) => {
       setRoutineArray((routineArray) =>
         sort(routineArray.concat(data.val()), (x) => x.sortValue)
       );
     });
-    const unsuOnChildChanged = onChildChanged(routinesRef, (data) => {
+    const unsubOnChildChanged = onChildChanged(routinesRef, (data) => {
       console.log({ onChildChanged: data, key: data.key, value: data.val() });
       setRoutineArray((routineArray) => {
         return sort(
@@ -178,8 +190,9 @@ export default function Routines() {
     });
 
     return () => {
-      unsuOnChildChanged();
-      unsuonChildAdded();
+      unsubOnChildAdded();
+      unsubOnChildChanged();
+      setRoutineArray([]);
     };
   }, [currentUser]);
 
@@ -216,29 +229,69 @@ export default function Routines() {
     _routineArray.splice(targetBorderId, 0, itemMoved);
     setRoutineArray(_routineArray);
   }
+
+  function selectItem(routineId: string) {
+    setSelectedRoutineId(routineId);
+    setShowDetail(true);
+  }
+
+  function renderRoutineDetail() {
+    if (!showDetail) return;
+
+    const routine = routineArray.find((x) => x.routineId === selectedRoutineId);
+    if (routine == null) return;
+
+    return (
+      <div css={styles.routineDetail}>
+        <RoutineDetail
+          routine={routine}
+          setRoutine={(newRoutine) => {
+            setRoutineArray((routineArray) => {
+              return sort(
+                routineArray
+                  .filter(
+                    (routine) => routine.routineId !== newRoutine.routineId
+                  )
+                  .concat(newRoutine),
+                (x) => x.sortValue
+              );
+            });
+          }}
+          closeDetail={() => {
+            setShowDetail(false);
+          }}
+        ></RoutineDetail>
+      </div>
+    );
+  }
+
   return (
     <>
       <Navbar selectedFeature="routines"></Navbar>
-      <Link href="routines/new">
-        <a css={styles.addButton}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <AiOutlinePlus style={{ marginRight: "0.2rem" }} />
-            <span>タスクを追加</span>
+      <div style={{ display: "flex" }}>
+        <div style={{ flex: "1 1 auto" }}>
+          <button css={styles.addButton}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <AiOutlinePlus style={{ marginRight: "0.2rem" }} />
+              <span>タスクを追加</span>
+            </div>
+          </button>
+          <div css={styles.list}>
+            {routineArray.map((x, i) => {
+              return (
+                <RoutineItem
+                  key={x.routineId}
+                  routine={x}
+                  i={i}
+                  length={routineArray.length}
+                  moveItem={moveItem}
+                  selectItem={selectItem}
+                ></RoutineItem>
+              );
+            })}
           </div>
-        </a>
-      </Link>
-      <div css={styles.list}>
-        {routineArray.map((x, i) => {
-          return (
-            <RoutineItem
-              key={x.routineId}
-              routine={x}
-              i={i}
-              length={routineArray.length}
-              moveItem={moveItem}
-            ></RoutineItem>
-          );
-        })}
+        </div>
+        {renderRoutineDetail()}
       </div>
     </>
   );

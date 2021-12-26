@@ -1,19 +1,19 @@
-import Link from "next/link";
-import Navbar from "../../components/Navbar";
-import { useRouter } from "next/router";
-import { FaChevronLeft } from "react-icons/fa";
+import { BiArrowToRight } from "react-icons/bi";
 import { css } from "@emotion/react";
-import { initialRoutines } from "models/psudo_data";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import RepeatText from "components/RepeatText";
-import { format, getDay } from "date-fns";
-import { DOW, Repeat } from "models/model";
+import { getDay, parse } from "date-fns";
+import { DOW, Repeat, Routine } from "models/model";
 
 const styles = {
   backIcon: css`
     color: black;
+    opacity: 0.6;
     font-size: 1.5rem;
+    display: flex;
+    justify-content: right;
+    margin-bottom: 1rem;
   `,
 
   name: css`
@@ -159,13 +159,15 @@ function RadioMonthType(props: {
   );
 }
 
-export default function RoutineDetail() {
-  const router = useRouter();
-  const { routineId } = router.query;
-  const [routine, setRoutine] = useState(
-    cloneDeep(initialRoutines.find((x) => x.routineId === routineId))
-  );
-
+export default function RoutineDetail({
+  routine,
+  setRoutine,
+  closeDetail,
+}: {
+  routine: Routine;
+  setRoutine: (x: Routine) => void;
+  closeDetail: () => void;
+}) {
   function onChage(
     event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) {
@@ -180,7 +182,7 @@ export default function RoutineDetail() {
         newRoutine.repeat.every = parseInt(value);
         break;
       case "date":
-        newRoutine.repeat.date = new Date(value);
+        newRoutine.repeat.date = value;
         break;
       case "monthType":
         newRoutine.repeat.monthType = value as "sameDay" | "sameDow";
@@ -194,7 +196,9 @@ export default function RoutineDetail() {
     const newRoutine = cloneDeep(routine);
 
     if (event.target.value === "week" && !routine.repeat.dayOfWeeks) {
-      newRoutine.repeat.dayOfWeeks = [getDay(routine.repeat.date)];
+      newRoutine.repeat.dayOfWeeks = [
+        getDay(parse(routine.repeat.date, "yyyy-MM-dd", new Date())),
+      ];
     } else if (event.target.value === "month" && !routine.repeat.monthType) {
       newRoutine.repeat.monthType = "sameDay";
     }
@@ -224,12 +228,9 @@ export default function RoutineDetail() {
   }
   return (
     <>
-      <Navbar selectedFeature="routines"></Navbar>
-      <Link href="/routines">
-        <a css={styles.backIcon}>
-          <FaChevronLeft />
-        </a>
-      </Link>
+      <a css={styles.backIcon} onClick={closeDetail}>
+        <BiArrowToRight />
+      </a>
       <div>
         <input
           type="input"
@@ -269,7 +270,7 @@ export default function RoutineDetail() {
               <input
                 type="date"
                 name="date"
-                value={format(routine.repeat.date, "yyyy-MM-dd")}
+                value={routine.repeat.date}
                 onChange={onChage}
                 style={{ marginLeft: "0.5rem" }}
               />

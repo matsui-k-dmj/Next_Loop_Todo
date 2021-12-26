@@ -11,7 +11,7 @@ import { AuthProvider } from "contexts/AuthContext";
 
 const styles = {
   container: css`
-    max-width: 800px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 0 4%;
   `,
