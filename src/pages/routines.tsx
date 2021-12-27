@@ -29,6 +29,7 @@ import {
   onValue,
   query,
   orderByChild,
+  limitToFirst,
 } from "firebase/database";
 
 import { sort } from "lib/utils";
@@ -200,10 +201,30 @@ export default function Routines() {
       });
     });
 
+    // taskの最小のsortValueをlistenしておいて, 新しいroutineのtaskも先頭にくるようにする。
+    const unsubOnValue = onValue(
+      query(
+        fbRef(
+          db,
+          `users/${currentUser.uid}/todo/${format(new Date(), "yyyy-MM-dd")}`
+        ),
+        orderByChild("sortValue"),
+        limitToFirst(1)
+      ),
+      (data) => {
+        if (!data.exists()) return;
+        Object.values(data.val()).forEach((x) => {
+          const task = x as Task;
+          setMinTaskSortValue(task.sortValue);
+        });
+      }
+    );
+
     return () => {
       unsubOnChildAdded();
       unsubOnChildChanged();
       setRoutineArray([]);
+      unsubOnValue();
     };
   }, [currentUser]);
 
@@ -249,7 +270,9 @@ export default function Routines() {
       taskId: newRef.key as string,
       routineId: initialRoutine.routineId,
       done: false,
-      sortValue: minTaskSortValue ? minTaskSortValue - 1000000 : 0,
+      sortValue: minTaskSortValue
+        ? minTaskSortValue - 1000000
+        : initialRoutine.sortValue,
     };
     updates[`users/${currentUser.uid}/todo/${todayPath}/${newRef.key}`] = task;
     fbUpdate(fbRef(db), updates);
