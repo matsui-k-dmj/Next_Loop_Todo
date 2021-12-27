@@ -7,7 +7,6 @@ export type Routine = {
     deleted: boolean,
     repeat: Repeat,
     subtaskes: Subtask[]
-    done?: boolean,
 }
 
 export type Subtask = {
@@ -25,6 +24,7 @@ export type Repeat = {
 }
 
 export type Task = {
+    taskId: string,
     routineId: string,
     sortValue: number,
     done: boolean,

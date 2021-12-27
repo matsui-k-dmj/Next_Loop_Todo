@@ -13,7 +13,7 @@ import { ref as fbRef, set as fbSet } from "firebase/database";
 import { initialRoutines } from "models/initialData";
 
 interface AuthValue {
-  currentUser: User | null;
+  currentUser: User;
 }
 
 const AuthContext = createContext({} as AuthValue); // 初期値はAuthProviderで直ぐに入れるのでasでも大丈夫
@@ -59,9 +59,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return unsub;
   }, []);
 
+  if (loading || currentUser == null) return null;
+
   return (
     <AuthContext.Provider value={{ currentUser }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }

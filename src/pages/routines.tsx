@@ -4,7 +4,7 @@ import RepeatText from "components/RepeatText";
 
 import { css } from "@emotion/react";
 import { useState, useRef, useEffect } from "react";
-import { Routine } from "models/model";
+import { Routine, Task } from "models/model";
 
 import {
   DragSourceMonitor,
@@ -25,6 +25,10 @@ import {
   onChildAdded,
   onChildChanged,
   push as fbPush,
+  update as fbUpdate,
+  onValue,
+  query,
+  orderByChild,
 } from "firebase/database";
 
 import { sort } from "lib/utils";
@@ -173,11 +177,11 @@ export default function Routines() {
   const [routineArray, setRoutineArray] = useState<Routine[]>([]);
   const [showDetail, setShowDetail] = useState(false);
   const [selectedRoutineId, setSelectedRoutineId] = useState<string>();
+  const [minTaskSortValue, setMinTaskSortValue] = useState<number>();
 
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    if (currentUser == null) return;
     const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
     const unsubOnChildAdded = onChildAdded(routinesRef, (data) => {
       setRoutineArray((routineArray) =>
@@ -203,7 +207,7 @@ export default function Routines() {
     };
   }, [currentUser]);
 
-  function fbSetNewRoutine(newRoutine: Routine) {
+  function fbSetRoutine(newRoutine: Routine) {
     if (currentUser == null) return;
     fbSet(
       fbRef(db, `users/${currentUser.uid}/routines/${newRoutine.routineId}`),
@@ -212,7 +216,7 @@ export default function Routines() {
   }
 
   function createNewRoutine() {
-    if (currentUser == null) return;
+    console.log("createNewRoutine");
     const newRoutineRef = fbPush(
       fbRef(db, `users/${currentUser.uid}/routines`)
     );
@@ -231,7 +235,24 @@ export default function Routines() {
 
     setSelectedRoutineId(initialRoutine.routineId);
     setShowDetail(true);
-    fbSetNewRoutine(initialRoutine);
+
+    const updates: any = {};
+    updates[`users/${currentUser.uid}/routines/${initialRoutine.routineId}`] =
+      initialRoutine;
+
+    // new task for today
+    const todayPath = format(new Date(), "yyyy-MM-dd");
+    const newRef = fbPush(
+      fbRef(db, `users/${currentUser.uid}/todo/${todayPath}`)
+    );
+    const task: Task = {
+      taskId: newRef.key as string,
+      routineId: initialRoutine.routineId,
+      done: false,
+      sortValue: minTaskSortValue ? minTaskSortValue - 1000000 : 0,
+    };
+    updates[`users/${currentUser.uid}/todo/${todayPath}/${newRef.key}`] = task;
+    fbUpdate(fbRef(db), updates);
   }
 
   function moveItem(sourceItemId: number, targetBorderId: number) {
@@ -266,7 +287,7 @@ export default function Routines() {
     }
     _routineArray.splice(targetBorderId, 0, movedRoutine);
     setRoutineArray(_routineArray);
-    fbSetNewRoutine(movedRoutine);
+    fbSetRoutine(movedRoutine);
   }
 
   function selectItem(routineId: string) {
@@ -295,7 +316,7 @@ export default function Routines() {
                 (x) => x.sortValue
               );
             });
-            fbSetNewRoutine(newRoutine);
+            fbSetRoutine(newRoutine);
           }}
           closeDetail={() => {
             setShowDetail(false);
