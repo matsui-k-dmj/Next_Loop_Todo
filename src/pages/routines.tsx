@@ -17,6 +17,8 @@ import { DnDType } from "lib/constants";
 
 import { AiOutlinePlus } from "react-icons/ai";
 import { useAuth } from "contexts/AuthContext";
+import { db } from "lib/firebaseConfig";
+
 import {
   ref as fbRef,
   set as fbSet,
@@ -24,8 +26,6 @@ import {
   onChildChanged,
   push as fbPush,
 } from "firebase/database";
-import { db } from "lib/firebaseConfig";
-import {} from "firebase/database";
 
 import { sort } from "lib/utils";
 import RoutineDetail from "components/RoutineDetail";
@@ -72,8 +72,8 @@ const styles = {
 
   routineDetail: css`
     flex: 0 0 22rem;
-    margin-left: 1rem;
-    padding-left: 0.5rem;
+    margin-left: 0.5rem;
+    padding-left: 1rem;
     border-left: 2px solid #ddd;
   `,
 };

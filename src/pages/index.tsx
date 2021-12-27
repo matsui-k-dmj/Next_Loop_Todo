@@ -2,10 +2,7 @@ import { css } from "@emotion/react";
 import Navbar from "components/Navbar";
 import { format } from "date-fns";
 import ja from "date-fns/locale/ja";
-import { Routine } from "models/model";
-
-import { initialRoutines } from "models/psudo_data";
-import cloneDeep from "lodash/cloneDeep";
+import { Routine, Task } from "models/model";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -18,7 +15,16 @@ import {
 import { DnDType } from "lib/constants";
 import { sort } from "lib/utils";
 import { toRepeat } from "lib/repeat";
+
 import { useAuth } from "contexts/AuthContext";
+import { db } from "lib/firebaseConfig";
+
+import {
+  ref as fbRef,
+  set as fbSet,
+  onChildAdded,
+  onChildChanged,
+} from "firebase/database";
 
 const styles = {
   list: css`
@@ -160,13 +166,67 @@ function RoutineItem(props: {
 
 export default function Home() {
   const today = new Date();
-  const [routineArray, setRoutineArray] = useState(() =>
-    cloneDeep(initialRoutines.filter((x) => toRepeat(today, x.repeat)))
-  );
+  const todayPath = format(today, "yyyy-MM-dd");
+  const { currentUser } = useAuth();
+  const [taskArray, setTaskArray] = useState<Task[]>([]);
+  const [routinesObj, setRoutinesObj] = useState<{
+    [routineId: string]: Routine;
+  }>({});
+
+  // routines の watch
+  useEffect(() => {
+    if (currentUser == null) return;
+
+    const todayRef = fbRef(db, `users/${currentUser.uid}/todo/${todayPath}`);
+    const unsubOnChildAdded2 = onChildAdded(todayRef, (data) => {
+      setTaskArray((_taskArray) => {
+        return sortTasks(_taskArray.concat(data.val()));
+      });
+    });
+
+    const unsubOnChildChanged2 = onChildChanged(todayRef, (data) => {
+      setTaskArray((_taskArray) =>
+        sortTasks(
+          _taskArray
+            .filter((task) => task.routineId !== data.val().routineId)
+            .concat(data.val())
+        )
+      );
+    });
+
+    const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
+    const unsubOnChildAdded = onChildAdded(routinesRef, (data) => {
+      const routineId = data.key;
+      if (routineId == null) return;
+
+      setRoutinesObj((routinesObj) => {
+        return { ...routinesObj, [routineId]: data.val() };
+      });
+    });
+
+    const unsubOnChildChanged = onChildChanged(routinesRef, (data) => {
+      const routineId = data.key;
+      if (routineId == null) return;
+
+      setRoutinesObj((routinesObj) => {
+        return { ...routinesObj, [routineId]: data.val() };
+      });
+    });
+
+    return () => {
+      unsubOnChildAdded();
+      unsubOnChildAdded2();
+
+      unsubOnChildChanged();
+      unsubOnChildChanged2();
+
+      setRoutinesObj({});
+    };
+  }, [currentUser]);
 
   /** sortValueでソートしてから, チェックされてないものを上にする */
-  function sortRoutines(routineArray: Routine[]) {
-    let sorted = sort(routineArray, (x) => x.sortValue);
+  function sortTasks(taskArray: Task[]) {
+    let sorted = sort(taskArray, (x) => x.sortValue);
     const uncheckedRoutines = sorted.filter((x) => !x.done);
     const checkedRoutines = sorted.filter((x) => x.done);
     sorted = uncheckedRoutines.concat(checkedRoutines);
@@ -179,38 +239,59 @@ export default function Home() {
       return;
 
     // 並べ変え
-    const _routineArray = routineArray.concat();
-    const itemMoved = _routineArray[sourceItemId];
+    const _taskArray = taskArray.concat();
+    const itemMoved = _taskArray[sourceItemId];
 
     // sortValueの更新
     let sortValue = 0;
     if (targetBorderId === 0) {
       // 先頭なら マイナス 10万
-      sortValue = _routineArray[0].sortValue - 100000;
-    } else if (targetBorderId === _routineArray.filter((x) => !x.done).length) {
+      sortValue = _taskArray[0].sortValue - 100000;
+    } else if (targetBorderId === _taskArray.filter((x) => !x.done).length) {
       // チェックされてる物のうち最後なら　プラス 10万
-      sortValue = _routineArray[targetBorderId - 1].sortValue + 100000;
+      sortValue = _taskArray[targetBorderId - 1].sortValue + 100000;
     } else {
       // 一個前と一個後ろの中点
       sortValue = Math.round(
-        (_routineArray[targetBorderId - 1].sortValue +
-          _routineArray[targetBorderId].sortValue) /
+        (_taskArray[targetBorderId - 1].sortValue +
+          _taskArray[targetBorderId].sortValue) /
           2
       );
     }
     itemMoved.sortValue = sortValue;
-    setRoutineArray(sortRoutines(_routineArray));
+    // setTaskArray(sortTasks(_taskArray));
   }
 
   /** チェックボックスをクリックしたらdoneをtoggleする */
   function onChecked(i: number) {
-    let _routineArray = routineArray.concat();
-    const itemChaged = _routineArray[i];
+    let _taskArray = taskArray.concat();
+    const itemChaged = _taskArray[i];
 
     itemChaged.done = !itemChaged.done;
-    _routineArray.splice(i, 1, itemChaged);
-    setRoutineArray(sortRoutines(_routineArray));
+    _taskArray.splice(i, 1, itemChaged);
+    // setTaskArray(sortTasks(_taskArray));
   }
+
+  Object.values(routinesObj)
+    .filter((routine) => toRepeat(today, routine.repeat))
+    .forEach((routine) => {
+      const task = taskArray.find(
+        (task) => task.routineId === routine.routineId
+      );
+      if (task == null && currentUser != null) {
+        fbSet(
+          fbRef(
+            db,
+            `users/${currentUser.uid}/todo/${todayPath}/${routine.routineId}`
+          ),
+          {
+            routineId: routine.routineId,
+            done: false,
+            sortValue: routine.sortValue,
+          }
+        );
+      }
+    });
 
   return (
     <>
@@ -218,11 +299,16 @@ export default function Home() {
       <div>
         <h2>{format(today, "M/d E", { locale: ja })}</h2>
         <div css={styles.list}>
-          {routineArray.map((x, i) => {
+          {taskArray.map((x, i) => {
+            const routine = routinesObj[x.routineId];
+            if (routine == null) return null;
+
+            if (!toRepeat(today, routine.repeat)) return null;
+
             return (
               <RoutineItem
                 key={x.routineId}
-                routine={x}
+                routine={routine}
                 i={i}
                 moveItem={moveItem}
                 onCheckboxClick={onChecked}
