@@ -1,5 +1,8 @@
 import { Repeat } from "models/model";
-import { differenceInDays, differenceInWeeks, differenceInMonths, getWeekOfMonth, startOfMonth, getDay } from "date-fns"
+import {
+    parse, differenceInDays, differenceInWeeks, differenceInMonths, getWeekOfMonth, startOfMonth,
+    getDay, startOfDay
+} from "date-fns"
 
 export function nthDayOfWeek(date: Date) {
     const firstDay = getDay(startOfMonth(date));
@@ -7,7 +10,8 @@ export function nthDayOfWeek(date: Date) {
 }
 
 export function toRepeat(date: Date, repeat: Repeat): boolean {
-    const repeatDate = new Date(repeat.date);
+    date = startOfDay(date)
+    const repeatDate = parse(repeat.date, "yyyy-MM-dd", new Date()); // これも startOfDayになる
     switch (repeat.type) {
         case "day":
             const days = differenceInDays(date, repeatDate)
