@@ -76,9 +76,10 @@ const styles = {
   `,
 
   routineDetail: css`
-    flex: 0 0 22rem;
+    flex: 1 0 23rem;
     margin-left: 0.5rem;
     padding-left: 1rem;
+    padding-right: 1rem;
     border-left: 2px solid #ddd;
   `,
 };
@@ -353,28 +354,31 @@ export default function Routines() {
     <>
       <Navbar selectedFeature="routines"></Navbar>
       <div style={{ display: "flex" }}>
-        <div style={{ flex: "1 1 auto" }}>
-          <button css={styles.addButton} onClick={createNewRoutine}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <AiOutlinePlus style={{ marginRight: "0.2rem" }} />
-              <span>タスクを追加</span>
+        {(!showDetail || document.documentElement.clientWidth > 600) && (
+          <div style={{ flex: "1 1 auto" }}>
+            <button css={styles.addButton} onClick={createNewRoutine}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <AiOutlinePlus style={{ marginRight: "0.2rem" }} />
+                <span>タスクを追加</span>
+              </div>
+            </button>
+            <div css={styles.list}>
+              {routineArray.map((x, i) => {
+                return (
+                  <RoutineItem
+                    key={x.routineId}
+                    routine={x}
+                    i={i}
+                    length={routineArray.length}
+                    moveItem={moveItem}
+                    selectItem={selectItem}
+                  ></RoutineItem>
+                );
+              })}
             </div>
-          </button>
-          <div css={styles.list}>
-            {routineArray.map((x, i) => {
-              return (
-                <RoutineItem
-                  key={x.routineId}
-                  routine={x}
-                  i={i}
-                  length={routineArray.length}
-                  moveItem={moveItem}
-                  selectItem={selectItem}
-                ></RoutineItem>
-              );
-            })}
           </div>
-        </div>
+        )}
+
         {renderRoutineDetail()}
       </div>
     </>
