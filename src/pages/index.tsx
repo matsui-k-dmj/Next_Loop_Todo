@@ -27,6 +27,7 @@ import {
   get as fbGet,
   push as fbPush,
 } from "firebase/database";
+import { VscGripper } from "react-icons/vsc";
 
 const styles = {
   list: css`
@@ -35,13 +36,27 @@ const styles = {
     border-bottom: 1px solid #ddd;
   `,
   item: css`
-    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem 0.5rem 0.1rem;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 
     &:hover {
       background-color: #f8f8f8;
     }
+  `,
+
+  grip: css`
+    display: flex;
+    place-items: center;
+    padding: 0 0.3rem;
+    margin: 0 0.2rem;
+    border-radius: 1rem;
+    &:hover {
+      background-color: #eee;
+    }
+    opacity: 0.5;
   `,
 
   dragged: css`
@@ -116,7 +131,7 @@ function RoutineItem(props: {
     },
   });
 
-  const [dragCollected, connectDrag] = useDrag({
+  const [dragCollected, connectDrag, connectPreview] = useDrag({
     type: DnDType.routine,
     item() {
       return { draggedId: props.i };
@@ -129,7 +144,7 @@ function RoutineItem(props: {
       return { isDragging: monitor.isDragging() };
     },
   });
-  connectDrop(connectDrag(ref));
+  connectDrop(connectPreview(ref));
 
   // カーソルがアイテムの中点のどっちにあるかを判定してtarget borderを決める
   let isOverStyle = css``;
@@ -151,6 +166,9 @@ function RoutineItem(props: {
         !!props.done && styles.checkedItem,
       ]}
     >
+      <div ref={connectDrag} css={styles.grip}>
+        <VscGripper></VscGripper>
+      </div>{" "}
       <input
         type="checkbox"
         id={props.routine.routineId}
@@ -160,7 +178,10 @@ function RoutineItem(props: {
         }}
         readOnly
       />
-      <label htmlFor={props.routine.routineId} style={{ paddingLeft: "1rem" }}>
+      <label
+        htmlFor={props.routine.routineId}
+        style={{ paddingLeft: "0.5rem" }}
+      >
         {props.routine.name}
       </label>
     </div>

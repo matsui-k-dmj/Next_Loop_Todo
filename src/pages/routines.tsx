@@ -35,6 +35,7 @@ import {
 import { sort } from "lib/utils";
 import RoutineDetail from "components/RoutineDetail";
 import { format } from "date-fns";
+import { VscGripper } from "react-icons/vsc";
 
 const styles = {
   list: css`
@@ -46,7 +47,8 @@ const styles = {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: 0.5rem 1rem;
+    align-items: center;
+    padding: 0.5rem 1rem 0.5rem 0.1rem;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 
@@ -63,6 +65,18 @@ const styles = {
     padding: 0.3rem;
     border: 1px solid #ddd;
     border-radius: 5px;
+  `,
+
+  grip: css`
+    display: flex;
+    place-items: center;
+    padding: 0 0.3rem;
+    margin: 0 0.2rem;
+    border-radius: 1rem;
+    &:hover {
+      background-color: #eee;
+    }
+    opacity: 0.5;
   `,
 
   dragged: css`
@@ -128,7 +142,7 @@ function RoutineItem(props: {
     },
   });
 
-  const [dragCollected, connectDrag] = useDrag({
+  const [dragCollected, connectDrag, connectPreview] = useDrag({
     type: DnDType.routine,
     item() {
       return { draggedId: props.i };
@@ -137,7 +151,8 @@ function RoutineItem(props: {
       return { isDragging: monitor.isDragging() };
     },
   });
-  connectDrop(connectDrag(ref));
+
+  connectDrop(connectPreview(ref));
 
   let isOverStyle = css``;
   if (dropCollected.isOver && ref.current != null && cursorY != null) {
@@ -160,7 +175,12 @@ function RoutineItem(props: {
           props.selectItem(props.routine.routineId);
         }}
       >
-        <div>{props.routine.name} </div>
+        <div style={{ display: "flex" }}>
+          <div ref={connectDrag} css={styles.grip}>
+            <VscGripper></VscGripper>
+          </div>
+          {props.routine.name}{" "}
+        </div>
         <div
           style={{
             display: "flex",
