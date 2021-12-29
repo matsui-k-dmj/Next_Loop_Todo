@@ -52,54 +52,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      getRedirectResult(auth)
-        .then((result) => {
-          console.log("Success getRedirectResult");
-          console.log(result);
+    /* linkWithRedirect の返り値を受け取る。
+      redirect じゃない場合は result が null になり、既にログインしているユーザになる。
+    */
+    getRedirectResult(auth)
+      .then((result) => {
+        console.log("Success getRedirectResult");
+        console.log(result);
+      })
+      .catch((error) => {
+        console.error("Error getRedirectResult");
+        console.log({ error });
 
-          // ログイン画面からのリダイレクトじゃない場合, すでに匿名認証してなければする。
-          if (result == null) {
-            if (user) {
-              console.log("User is set!");
-              console.log({ user });
-              setCurrentUser(user);
-            } else {
-              console.log("No User!");
-              signInAnonymously(auth)
-                .then((userCredential) => {
-                  console.log("signInAnonymously");
-                  initilizeData(userCredential.user.uid);
-                })
-                .catch((error) => {
-                  console.error("signInAnonymously");
-                  console.error({ error });
-                });
-            }
-          } else {
-            setCurrentUser(user);
-          }
-        })
-        .catch((error) => {
-          console.error("Error getRedirectResult");
-          console.log({ error });
-
-          // 既に存在するユーザな場合は、signInWithCredential でログインする。
-          if (error?.code === "auth/credential-already-in-use") {
-            console.log("auth/credential-already-in-use: signInWithCredential");
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            if (credential == null) {
-              console.error("credential is null");
-              throw error;
-            }
-            signInWithCredential(auth, credential).then((result) => {
-              console.log("Success signInWithCredential");
-              console.log(result);
-            });
-          } else {
+        // 既に存在するユーザな場合は、signInWithCredential でログインする。
+        if (error?.code === "auth/credential-already-in-use") {
+          console.log("auth/credential-already-in-use: signInWithCredential");
+          const credential = GoogleAuthProvider.credentialFromError(error);
+          if (credential == null) {
+            console.error("credential is null");
             throw error;
           }
-        });
+          signInWithCredential(auth, credential).then((result) => {
+            console.log("Success signInWithCredential");
+            console.log(result);
+          });
+        } else {
+          throw error;
+        }
+      });
+
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is set!");
+        console.log({ user });
+        setCurrentUser(user);
+      } else {
+        console.log("No User!");
+        signInAnonymously(auth)
+          .then((userCredential) => {
+            console.log("signInAnonymously");
+            initilizeData(userCredential.user.uid);
+          })
+          .catch((error) => {
+            console.error("signInAnonymously");
+            console.error({ error });
+          });
+      }
 
       setLoading(false);
     });
