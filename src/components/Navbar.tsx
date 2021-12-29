@@ -1,10 +1,17 @@
 import { css } from "@emotion/react";
+import { useAuth } from "contexts/AuthContext";
 import Link from "next/link";
 const styles = {
   container: css`
     display: flex;
+    justify-content: space-between;
     gap: 1rem;
     padding: 1rem;
+  `,
+
+  links: css`
+    display: flex;
+    gap: 1rem;
   `,
 
   selected: css`
@@ -21,30 +28,37 @@ type NavbarProps = {
 };
 
 export default function Navbar({ selectedFeature }: NavbarProps) {
-  selectedFeature;
+  const { currentUser, signInWithGoogle } = useAuth();
   return (
     <>
       <div css={styles.container}>
-        <Link href="/">
-          <a
-            css={
-              selectedFeature === "todo" ? styles.selected : styles.not_selected
-            }
-          >
-            Todo
-          </a>
-        </Link>
-        <Link href="/routines">
-          <a
-            css={
-              selectedFeature === "routines"
-                ? styles.selected
-                : styles.not_selected
-            }
-          >
-            Routines
-          </a>
-        </Link>
+        <div css={styles.links}>
+          <Link href="/">
+            <a
+              css={
+                selectedFeature === "todo"
+                  ? styles.selected
+                  : styles.not_selected
+              }
+            >
+              Todo
+            </a>
+          </Link>
+          <Link href="/routines">
+            <a
+              css={
+                selectedFeature === "routines"
+                  ? styles.selected
+                  : styles.not_selected
+              }
+            >
+              Routines
+            </a>
+          </Link>
+        </div>
+        {currentUser.isAnonymous && (
+          <button onClick={signInWithGoogle}>Google で ログイン</button>
+        )}
       </div>
     </>
   );

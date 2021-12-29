@@ -235,7 +235,7 @@ export default function RoutineDetail({
           type="input"
           name="name"
           value={routine.name}
-          read-only
+          readOnly
           css={styles.name}
           onChange={onChage}
         />
@@ -249,7 +249,7 @@ export default function RoutineDetail({
               step="1"
               value={routine.repeat.every}
               css={styles.every}
-              read-only
+              readOnly
               onChange={onChage}
               name="every"
             />
