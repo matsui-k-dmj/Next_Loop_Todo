@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import Navbar from "components/Navbar";
 import { format } from "date-fns";
 import ja from "date-fns/locale/ja";
 import { Routine, Task } from "models/model";
@@ -87,6 +86,7 @@ function RoutineItem(props: {
   routine: Routine;
   done: boolean;
   i: number;
+  dateString: string;
   moveItem: (sourceId: number, targetId: number) => void;
   onCheckboxClick: (i: number) => void;
 }) {
@@ -97,7 +97,7 @@ function RoutineItem(props: {
   const [cursorCoord, setcursorY] = useState<XYCoord | null>();
 
   const [dropCollected, connectDrop] = useDrop({
-    accept: DnDType.routine,
+    accept: DnDType.routine + props.dateString,
     collect(monitor: DropTargetMonitor) {
       return {
         isOver: monitor.isOver() && monitor.canDrop(),
@@ -132,7 +132,7 @@ function RoutineItem(props: {
   });
 
   const [dragCollected, connectDrag, connectPreview] = useDrag({
-    type: DnDType.routine,
+    type: DnDType.routine + props.dateString,
     item() {
       return { draggedId: props.i };
     },
@@ -171,7 +171,7 @@ function RoutineItem(props: {
       </div>{" "}
       <input
         type="checkbox"
-        id={props.routine.routineId}
+        id={props.routine.routineId + props.dateString}
         checked={!!props.done}
         onClick={() => {
           props.onCheckboxClick(props.i);
@@ -179,7 +179,7 @@ function RoutineItem(props: {
         readOnly
       />
       <label
-        htmlFor={props.routine.routineId}
+        htmlFor={props.routine.routineId + props.dateString}
         style={{ paddingLeft: "0.5rem" }}
       >
         {props.routine.name}
@@ -189,7 +189,7 @@ function RoutineItem(props: {
 }
 
 export default function Todo({ date }: { date: Date }) {
-  const todayPath = format(date, "yyyy-MM-dd");
+  const dateString = format(date, "yyyy-MM-dd");
   const { currentUser } = useAuth();
   const [taskArray, setTaskArray] = useState<Task[]>([]);
   const [routinesObj, setRoutinesObj] = useState<{
@@ -197,7 +197,7 @@ export default function Todo({ date }: { date: Date }) {
   }>({});
 
   useEffect(() => {
-    const todayRef = fbRef(db, `users/${currentUser.uid}/todo/${todayPath}`);
+    const todayRef = fbRef(db, `users/${currentUser.uid}/todo/${dateString}`);
     const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
 
     // 新しい日のTODOの初期化処理
@@ -226,7 +226,7 @@ export default function Todo({ date }: { date: Date }) {
             const _routine = routine as Routine;
 
             const newRef = fbPush(
-              fbRef(db, `users/${currentUser.uid}/todo/${todayPath}`)
+              fbRef(db, `users/${currentUser.uid}/todo/${dateString}`)
             );
 
             fbSet(newRef, {
@@ -282,7 +282,7 @@ export default function Todo({ date }: { date: Date }) {
 
       setRoutinesObj({});
     };
-  }, [currentUser, todayPath]);
+  }, [currentUser, dateString]);
 
   /** sortValueでソートしてから, チェックされてないものを上にする */
   function sortTasks(taskArray: Task[]) {
@@ -323,7 +323,7 @@ export default function Todo({ date }: { date: Date }) {
     fbSet(
       fbRef(
         db,
-        `users/${currentUser.uid}/todo/${todayPath}/${itemMoved.taskId}`
+        `users/${currentUser.uid}/todo/${dateString}/${itemMoved.taskId}`
       ),
       itemMoved
     );
@@ -340,7 +340,7 @@ export default function Todo({ date }: { date: Date }) {
     fbSet(
       fbRef(
         db,
-        `users/${currentUser.uid}/todo/${todayPath}/${itemChaged.taskId}`
+        `users/${currentUser.uid}/todo/${dateString}/${itemChaged.taskId}`
       ),
       itemChaged
     );
@@ -362,6 +362,7 @@ export default function Todo({ date }: { date: Date }) {
                 routine={routine}
                 done={task.done}
                 i={i}
+                dateString={dateString}
                 moveItem={moveItem}
                 onCheckboxClick={onChecked}
               ></RoutineItem>
