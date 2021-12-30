@@ -1,3 +1,3 @@
 export const DnDType = {
-    routine: "routine"
-}
+  routine: "routine",
+};
