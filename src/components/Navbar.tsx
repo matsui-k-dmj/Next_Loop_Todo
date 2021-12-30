@@ -86,7 +86,7 @@ export default function Navbar({ selectedFeature }: NavbarProps) {
         {currentUser.isAnonymous && (
           <button onClick={signInWithGoogle} css={styles.loginButton}>
             <div css={styles.loginLogo}>
-              <Image src="/g-logo.png" alt="glogo" width="18px" height="18px" />
+              <img src="/g-logo.png" alt="glogo" width="18px" height="18px" />
             </div>
 
             <span css={styles.loginText}>ログイン</span>

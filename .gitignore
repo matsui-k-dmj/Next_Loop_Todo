@@ -43,3 +43,5 @@ stories/
 *.log
 
 .vscode/
+
+.firebase/
