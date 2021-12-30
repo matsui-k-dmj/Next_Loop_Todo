@@ -11,9 +11,7 @@ import {
   signInAnonymously,
   User,
   GoogleAuthProvider,
-  linkWithPopup,
   signInWithCredential,
-  signInWithRedirect,
   linkWithRedirect,
 } from "@firebase/auth";
 
@@ -21,7 +19,6 @@ import { db } from "lib/firebaseConfig";
 import { ref as fbRef, set as fbSet } from "firebase/database";
 import { initialRoutines } from "models/initialData";
 
-import { cloneDeep } from "lodash";
 import { getRedirectResult } from "firebase/auth";
 
 const provider = new GoogleAuthProvider();
@@ -55,48 +52,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     /* linkWithRedirect の返り値を受け取る。
       redirect じゃない場合は result が null になり、既にログインしているユーザになる。
     */
-    getRedirectResult(auth)
-      .then((result) => {
-        console.log("Success getRedirectResult");
-        console.log(result);
-      })
-      .catch((error) => {
-        console.error("Error getRedirectResult");
-        console.log({ error });
-
-        // 既に存在するユーザな場合は、signInWithCredential でログインする。
-        if (error?.code === "auth/credential-already-in-use") {
-          console.log("auth/credential-already-in-use: signInWithCredential");
-          const credential = GoogleAuthProvider.credentialFromError(error);
-          if (credential == null) {
-            console.error("credential is null");
-            throw error;
-          }
-          signInWithCredential(auth, credential).then((result) => {
-            console.log("Success signInWithCredential");
-            console.log(result);
-          });
-        } else {
+    getRedirectResult(auth).catch((error) => {
+      // 既に存在するユーザな場合は、signInWithCredential でログインする。
+      if (error?.code === "auth/credential-already-in-use") {
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        if (credential == null) {
           throw error;
         }
-      });
+        signInWithCredential(auth, credential);
+      } else {
+        throw error;
+      }
+    });
 
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("User is set!");
-        console.log({ user });
         setCurrentUser(user);
       } else {
         console.log("No User!");
-        signInAnonymously(auth)
-          .then((userCredential) => {
-            console.log("signInAnonymously");
-            initilizeData(userCredential.user.uid);
-          })
-          .catch((error) => {
-            console.error("signInAnonymously");
-            console.error({ error });
-          });
+        signInAnonymously(auth).then((userCredential) => {
+          initilizeData(userCredential.user.uid);
+        });
       }
 
       setLoading(false);

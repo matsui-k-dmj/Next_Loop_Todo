@@ -60,11 +60,14 @@ const styles = {
   addButton: css`
     display: inline-block;
     color: black;
-    background-color: #f8f8f8;
+    background-color: #fff;
     text-decoration: none;
-    padding: 0.3rem;
+    padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 5px;
+    &:hover {
+      background-color: #f8f8f8;
+    }
   `,
 
   grip: css`
@@ -74,7 +77,7 @@ const styles = {
     margin: 0 0.2rem;
     border-radius: 1rem;
     &:hover {
-      background-color: #eee;
+      background-color: #ccc;
     }
     opacity: 0.5;
   `,
