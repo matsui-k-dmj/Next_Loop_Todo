@@ -41,7 +41,7 @@ export const initialRoutines = {
   },
   shukkin: {
     routineId: "shukkin",
-    name: "出勤だあああああああああああああああああああああああ",
+    name: "出勤",
     sortValue: 300000,
     deleted: false,
     subtaskes: [],
