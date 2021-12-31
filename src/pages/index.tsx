@@ -17,10 +17,7 @@ export default function Home() {
       <div css={styles.marginBottom}>
         <Todo date={today}></Todo>
       </div>
-      <div css={styles.marginBottom}>
-        <Todo date={subDays(today, 1)}></Todo>
-      </div>
-      <Todo date={subDays(today, 2)}></Todo>
+      <Todo date={subDays(today, 1)}></Todo>
     </>
   );
 }

@@ -282,7 +282,7 @@ export default function Todo({ date }: { date: Date }) {
 
       setRoutinesObj({});
     };
-  }, [currentUser, dateString]);
+  }, [currentUser, dateString, date]);
 
   /** sortValueでソートしてから, チェックされてないものを上にする */
   function sortTasks(taskArray: Task[]) {
