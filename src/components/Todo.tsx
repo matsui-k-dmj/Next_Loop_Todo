@@ -240,9 +240,13 @@ export default function Todo({ date }: { date: Date }) {
     });
 
     const unsubOnChildAdded2 = onChildAdded(todayRef, (data) => {
-      setTaskArray((_taskArray) => {
-        return sortTasks(_taskArray.concat(data.val()));
-      });
+      setTaskArray((_taskArray) =>
+        sortTasks(
+          _taskArray
+            .filter((task) => task.routineId !== data.val().routineId)
+            .concat(data.val())
+        )
+      );
     });
 
     const unsubOnChildChanged2 = onChildChanged(todayRef, (data) => {

@@ -209,12 +209,17 @@ export default function Routines() {
   useEffect(() => {
     const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
     const unsubOnChildAdded = onChildAdded(routinesRef, (data) => {
-      setRoutineArray((routineArray) =>
-        sort(routineArray.concat(data.val()), (x) => x.sortValue)
-      );
+      setRoutineArray((routineArray) => {
+        return sort(
+          routineArray
+            .filter((routine) => routine.routineId !== data.key)
+            .concat(data.val()),
+          (x) => x.sortValue
+        );
+      });
     });
+
     const unsubOnChildChanged = onChildChanged(routinesRef, (data) => {
-      console.log({ onChildChanged: data, key: data.key, value: data.val() });
       setRoutineArray((routineArray) => {
         return sort(
           routineArray
