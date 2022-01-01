@@ -333,7 +333,6 @@ export default function Routines() {
       targetBorderId -= 1;
     }
     _routineArray.splice(targetBorderId, 0, movedRoutine);
-    setRoutineArray(_routineArray);
     fbSetRoutine(movedRoutine);
   }
 
@@ -353,16 +352,6 @@ export default function Routines() {
         <RoutineDetail
           routine={routine}
           setRoutine={(newRoutine) => {
-            setRoutineArray((routineArray) => {
-              return sort(
-                routineArray
-                  .filter(
-                    (routine) => routine.routineId !== newRoutine.routineId
-                  )
-                  .concat(newRoutine),
-                (x) => x.sortValue
-              );
-            });
             fbSetRoutine(newRoutine);
           }}
           closeDetail={() => {

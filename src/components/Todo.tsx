@@ -319,7 +319,6 @@ export default function Todo({ date }: { date: Date }) {
       );
     }
     itemMoved.sortValue = sortValue;
-    setTaskArray(sortTasks(_taskArray));
     fbSet(
       fbRef(
         db,
@@ -336,7 +335,6 @@ export default function Todo({ date }: { date: Date }) {
 
     itemChaged.done = !itemChaged.done;
     _taskArray.splice(i, 1, itemChaged);
-    setTaskArray(sortTasks(_taskArray));
     fbSet(
       fbRef(
         db,
