@@ -24,6 +24,7 @@ import {
   set as fbSet,
   push as fbPush,
   update as fbUpdate,
+  remove,
 } from "firebase/database";
 
 import RoutineDetail from "components/RoutineDetail";
@@ -87,7 +88,7 @@ const styles = {
   `,
 
   routineDetail: css`
-    flex: 1 0 23rem;
+    flex: 0 0 23rem;
     margin-left: 0.5rem;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -288,6 +289,10 @@ export default function Routines() {
     setShowDetail(true);
   }
 
+  function removeRoutine(routineId: string) {
+    remove(fbRef(db, `users/${currentUser.uid}/routines/${routineId}`));
+  }
+
   function renderRoutineDetail() {
     if (!showDetail) return;
 
@@ -304,6 +309,7 @@ export default function Routines() {
           closeDetail={() => {
             setShowDetail(false);
           }}
+          removeRoutine={removeRoutine}
         ></RoutineDetail>
       </div>
     );

@@ -1,4 +1,5 @@
 import { BiArrowToRight } from "react-icons/bi";
+import { MdOutlineArchive } from "react-icons/md";
 import { css } from "@emotion/react";
 import { ChangeEvent } from "react";
 import cloneDeep from "lodash/cloneDeep";
@@ -10,10 +11,10 @@ const styles = {
   backIcon: css`
     color: black;
     opacity: 0.6;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     display: flex;
-    justify-content: right;
-    margin-bottom: 1rem;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
   `,
 
   name: css`
@@ -85,6 +86,13 @@ const styles = {
   monthTypeText: css`
     display: inline-block;
     margin-left: 0.3rem;
+  `,
+  deleteButton: css`
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    margin-top: 2rem;
+    border-radius: 5px;
   `,
 };
 
@@ -162,10 +170,12 @@ export default function RoutineDetail({
   routine,
   setRoutine,
   closeDetail,
+  removeRoutine,
 }: {
   routine: Routine;
   setRoutine: (x: Routine) => void;
   closeDetail: () => void;
+  removeRoutine: (routineId: string) => void;
 }) {
   function onChage(
     event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
@@ -229,6 +239,12 @@ export default function RoutineDetail({
     <>
       <a css={styles.backIcon} onClick={closeDetail}>
         <BiArrowToRight />
+        <MdOutlineArchive
+          onClick={() => {
+            removeRoutine(routine.routineId);
+            closeDetail();
+          }}
+        />
       </a>
       <div>
         <input
@@ -272,15 +288,14 @@ export default function RoutineDetail({
                 style={{ marginLeft: "0.5rem" }}
               />
             </div>
-            {routine.repeat.type === "week" &&
-              routine.repeat.dayOfWeeks != null && (
-                <div css={styles.repeatContentDetails}>
-                  <SelectDayOfWeeks
-                    dayOfWeeks={routine.repeat.dayOfWeeks}
-                    onDowChange={onDowChange}
-                  ></SelectDayOfWeeks>
-                </div>
-              )}
+            {routine.repeat.type === "week" && (
+              <div css={styles.repeatContentDetails}>
+                <SelectDayOfWeeks
+                  dayOfWeeks={routine.repeat.dayOfWeeks ?? []}
+                  onDowChange={onDowChange}
+                ></SelectDayOfWeeks>
+              </div>
+            )}
             {routine.repeat.type === "month" && (
               <div css={styles.repeatContentDetails}>
                 <RadioMonthType

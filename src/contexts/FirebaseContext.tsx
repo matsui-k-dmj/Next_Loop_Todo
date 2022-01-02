@@ -30,6 +30,7 @@ import {
   orderByChild,
   limitToFirst,
   DataSnapshot,
+  onChildRemoved,
 } from "firebase/database";
 import { sort } from "lib/utils";
 import { toRepeat } from "lib/repeat";
@@ -114,6 +115,14 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
     const unsubArray = [
       onChildAdded(routinesRef, updateRoutine),
       onChildChanged(routinesRef, updateRoutine),
+      onChildRemoved(routinesRef, (data) => {
+        setRoutineArray((routineArray) => {
+          return sort(
+            routineArray.filter((routine) => routine.routineId !== data.key),
+            (x) => x.sortValue
+          );
+        });
+      }),
       onValue(
         query(todayTaskRef, orderByChild("sortValue"), limitToFirst(1)),
         (data) => {
