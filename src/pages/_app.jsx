@@ -10,6 +10,8 @@ import { DndProvider } from "react-dnd";
 import { MultiBackend } from "react-dnd-multi-backend";
 import { HTML5toTouch } from "rdndmb-html5-to-touch";
 
+import { FirebaseProvider } from "contexts/FirebaseContext";
+
 const styles = {
   container: css`
     max-width: 1500px;
@@ -25,11 +27,13 @@ function MyApp({ Component, pageProps }) {
         <title>Loop Todo</title>
       </Head>
       <AuthProvider>
-        <DndProvider backend={MultiBackend} options={HTML5toTouch}>
-          <div css={styles.container}>
-            <Component {...pageProps} />
-          </div>
-        </DndProvider>
+        <FirebaseProvider>
+          <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+            <div css={styles.container}>
+              <Component {...pageProps} />
+            </div>
+          </DndProvider>
+        </FirebaseProvider>
       </AuthProvider>
     </>
   );

@@ -3,7 +3,7 @@ import Navbar from "components/Navbar";
 import RepeatText from "components/RepeatText";
 
 import { css } from "@emotion/react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Routine, Task } from "models/model";
 
 import {
@@ -22,20 +22,14 @@ import { db } from "lib/firebaseConfig";
 import {
   ref as fbRef,
   set as fbSet,
-  onChildAdded,
-  onChildChanged,
   push as fbPush,
   update as fbUpdate,
-  onValue,
-  query,
-  orderByChild,
-  limitToFirst,
 } from "firebase/database";
 
-import { sort } from "lib/utils";
 import RoutineDetail from "components/RoutineDetail";
 import { format } from "date-fns";
 import { VscGripper } from "react-icons/vsc";
+import { useFirebase } from "contexts/FirebaseContext";
 
 const styles = {
   list: css`
@@ -199,63 +193,11 @@ function RoutineItem(props: {
 }
 
 export default function Routines() {
-  const [routineArray, setRoutineArray] = useState<Routine[]>([]);
   const [showDetail, setShowDetail] = useState(false);
   const [selectedRoutineId, setSelectedRoutineId] = useState<string>();
-  const [minTaskSortValue, setMinTaskSortValue] = useState<number>();
 
   const { currentUser } = useAuth();
-
-  useEffect(() => {
-    const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
-    const unsubOnChildAdded = onChildAdded(routinesRef, (data) => {
-      setRoutineArray((routineArray) => {
-        return sort(
-          routineArray
-            .filter((routine) => routine.routineId !== data.key)
-            .concat(data.val()),
-          (x) => x.sortValue
-        );
-      });
-    });
-
-    const unsubOnChildChanged = onChildChanged(routinesRef, (data) => {
-      setRoutineArray((routineArray) => {
-        return sort(
-          routineArray
-            .filter((routine) => routine.routineId !== data.key)
-            .concat(data.val()),
-          (x) => x.sortValue
-        );
-      });
-    });
-
-    // taskの最小のsortValueをlistenしておいて, 新しいroutineのtaskも先頭にくるようにする。
-    const unsubOnValue = onValue(
-      query(
-        fbRef(
-          db,
-          `users/${currentUser.uid}/todo/${format(new Date(), "yyyy-MM-dd")}`
-        ),
-        orderByChild("sortValue"),
-        limitToFirst(1)
-      ),
-      (data) => {
-        if (!data.exists()) return;
-        Object.values(data.val()).forEach((x) => {
-          const task = x as Task;
-          setMinTaskSortValue(task.sortValue);
-        });
-      }
-    );
-
-    return () => {
-      unsubOnChildAdded();
-      unsubOnChildChanged();
-      setRoutineArray([]);
-      unsubOnValue();
-    };
-  }, [currentUser]);
+  const { routineArray, minTaskSortValue } = useFirebase();
 
   function fbSetRoutine(newRoutine: Routine) {
     if (currentUser == null) return;

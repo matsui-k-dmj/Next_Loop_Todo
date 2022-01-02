@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { format } from "date-fns";
 import ja from "date-fns/locale/ja";
 import { Routine, Task } from "models/model";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import {
   DragSourceMonitor,
@@ -12,21 +12,14 @@ import {
   XYCoord,
 } from "react-dnd";
 import { DnDType } from "lib/constants";
-import { sort } from "lib/utils";
 import { toRepeat } from "lib/repeat";
 
 import { useAuth } from "contexts/AuthContext";
 import { db } from "lib/firebaseConfig";
 
-import {
-  ref as fbRef,
-  set as fbSet,
-  onChildAdded,
-  onChildChanged,
-  get as fbGet,
-  push as fbPush,
-} from "firebase/database";
+import { ref as fbRef, set as fbSet } from "firebase/database";
 import { VscGripper } from "react-icons/vsc";
+import parse from "date-fns/parse";
 
 const styles = {
   list: css`
@@ -188,114 +181,18 @@ function RoutineItem(props: {
   );
 }
 
-export default function Todo({ date }: { date: Date }) {
-  const dateString = format(date, "yyyy-MM-dd");
+export default function Todo({
+  dateString,
+  taskArray,
+  routinesObj,
+}: {
+  dateString: string;
+  taskArray: Task[];
+  routinesObj: { [routineId: string]: Routine };
+}) {
   const { currentUser } = useAuth();
-  const [taskArray, setTaskArray] = useState<Task[]>([]);
-  const [routinesObj, setRoutinesObj] = useState<{
-    [routineId: string]: Routine;
-  }>({});
 
-  useEffect(() => {
-    const todayRef = fbRef(db, `users/${currentUser.uid}/todo/${dateString}`);
-    const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
-
-    // 新しい日のTODOの初期化処理
-    fbGet(todayRef).then((todoData) => {
-      // すでにRoutinesからupdateで作られてるtaskをもう一度作らないために必要
-      let createdRoutineIds: string[] = [];
-      if (todoData.val()) {
-        createdRoutineIds = Object.values(todoData.val()).map((task) => {
-          const _task = task as Task;
-          return _task.routineId;
-        });
-      } else {
-        createdRoutineIds = [];
-      }
-
-      fbGet(routinesRef).then((routineData) => {
-        Object.values(routineData.val())
-          .filter((routine) => {
-            const _routine = routine as Routine;
-            return (
-              toRepeat(date, _routine.repeat) &&
-              !createdRoutineIds.includes(_routine.routineId)
-            );
-          })
-          .forEach((routine) => {
-            const _routine = routine as Routine;
-
-            const newRef = fbPush(
-              fbRef(db, `users/${currentUser.uid}/todo/${dateString}`)
-            );
-
-            fbSet(newRef, {
-              taskId: newRef.key,
-              routineId: _routine.routineId,
-              done: false,
-              sortValue: _routine.sortValue,
-            });
-          });
-      });
-    });
-
-    const unsubOnChildAdded2 = onChildAdded(todayRef, (data) => {
-      setTaskArray((_taskArray) =>
-        sortTasks(
-          _taskArray
-            .filter((task) => task.routineId !== data.val().routineId)
-            .concat(data.val())
-        )
-      );
-    });
-
-    const unsubOnChildChanged2 = onChildChanged(todayRef, (data) => {
-      setTaskArray((_taskArray) =>
-        sortTasks(
-          _taskArray
-            .filter((task) => task.routineId !== data.val().routineId)
-            .concat(data.val())
-        )
-      );
-    });
-
-    const unsubOnChildAdded = onChildAdded(routinesRef, (data) => {
-      const routineId = data.key;
-      if (routineId == null) return;
-
-      setRoutinesObj((routinesObj) => {
-        return { ...routinesObj, [routineId]: data.val() };
-      });
-    });
-
-    const unsubOnChildChanged = onChildChanged(routinesRef, (data) => {
-      const routineId = data.key;
-      if (routineId == null) return;
-
-      setRoutinesObj((routinesObj) => {
-        return { ...routinesObj, [routineId]: data.val() };
-      });
-    });
-
-    return () => {
-      unsubOnChildAdded();
-      unsubOnChildAdded2();
-
-      unsubOnChildChanged();
-      unsubOnChildChanged2();
-
-      setRoutinesObj({});
-    };
-  }, [currentUser, dateString, date]);
-
-  /** sortValueでソートしてから, チェックされてないものを上にする */
-  function sortTasks(taskArray: Task[]) {
-    let sorted = sort(taskArray, (x) => x.sortValue);
-    const uncheckedRoutines = sorted.filter((x) => !x.done);
-    const checkedRoutines = sorted.filter((x) => x.done);
-    sorted = uncheckedRoutines.concat(checkedRoutines);
-    return sorted;
-  }
+  const date = parse(dateString, "yyyy-MM-dd", new Date());
 
   /** アイテムの並べ変え。 */
   function moveItem(sourceItemId: number, targetBorderId: number) {
