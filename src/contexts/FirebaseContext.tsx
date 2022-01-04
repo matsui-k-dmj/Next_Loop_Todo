@@ -96,7 +96,7 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
     // 日付が変わるときにdateStringを更新する
     const timeoutId = setTimeout(() => {
       setDateString(format(new Date(), "yyyy-MM-dd"));
-    }, differenceInMilliseconds(startOfDay(addDays(new Date(), 1)), new Date()));
+    }, differenceInMilliseconds(startOfDay(addDays(new Date(), 1)), new Date()) + 1000);
 
     const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
     const todayTaskRef = fbRef(
