@@ -54,10 +54,12 @@ const styles = {
   every: css`
     width: 3.5rem;
     text-align: center;
+    height: 2rem;
   `,
 
   typeSelect: css`
     margin: 0 0.5rem;
+    height: 2rem;
   `,
 
   dateContainer: css`
@@ -179,10 +181,12 @@ export default function RoutineDetail({
 }) {
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  // routineのnameが無いときにname input にfocusする
-  if (nameInputRef.current != null && routine.name === "") {
-    nameInputRef.current.focus();
-  }
+  useEffect(() => {
+    // routineのnameが無いときにname input にfocusする
+    if (nameInputRef.current != null && routine.name === "") {
+      nameInputRef.current.focus();
+    }
+  });
 
   useEffect(() => {
     // ブラウザバックしたときにurlが戻るのを防いで、detailだけ閉じる
