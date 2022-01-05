@@ -157,7 +157,7 @@ function RoutineItem(props: {
         dropCollected.isOver && isOverStyle,
         !!props.done && styles.checkedItem,
       ]}
-      onClick={() => {
+      onClick={(event) => {
         props.onCheckboxClick(props.i);
       }}
       className="clickable"
@@ -165,18 +165,8 @@ function RoutineItem(props: {
       <div ref={connectDrag} css={styles.grip}>
         <VscGripper></VscGripper>
       </div>{" "}
-      <input
-        type="checkbox"
-        id={props.routine.routineId + props.dateString}
-        checked={!!props.done}
-        readOnly
-      />
-      <label
-        htmlFor={props.routine.routineId + props.dateString}
-        style={{ paddingLeft: "0.5rem" }}
-      >
-        {props.routine.name}
-      </label>
+      <input type="checkbox" checked={!!props.done} readOnly />
+      <label style={{ paddingLeft: "0.5rem" }}>{props.routine.name}</label>
     </div>
   );
 }
@@ -231,6 +221,7 @@ export default function Todo({
 
   /** チェックボックスをクリックしたらdoneをtoggleする */
   function onChecked(i: number) {
+    console.log("checked");
     let _taskArray = taskArray.concat();
     const itemChaged = _taskArray[i];
 

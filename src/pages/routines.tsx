@@ -37,7 +37,7 @@ const styles = {
     margin-top: 1rem;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
-    max-height: 80vh;
+    max-height: 70vh;
     overflow: auto;
   `,
   item: css`
