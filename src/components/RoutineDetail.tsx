@@ -1,7 +1,7 @@
 import { BiArrowToRight } from "react-icons/bi";
 import { MdOutlineArchive } from "react-icons/md";
 import { css } from "@emotion/react";
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import RepeatText from "components/RepeatText";
 import { getDay, parse } from "date-fns";
@@ -177,6 +177,13 @@ export default function RoutineDetail({
   closeDetail: () => void;
   removeRoutine: (routineId: string) => void;
 }) {
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  // routineのnameが無いときにname input にfocusする
+  if (nameInputRef.current != null && routine.name === "") {
+    nameInputRef.current.focus();
+  }
+
   useEffect(() => {
     // ブラウザバックしたときにurlが戻るのを防いで、detailだけ閉じる
     if (!window.history.state.preventBack) {
@@ -267,6 +274,7 @@ export default function RoutineDetail({
           value={routine.name}
           css={styles.name}
           onChange={onChage}
+          ref={nameInputRef}
         />
         <details css={styles.repeatContainer}>
           <summary css={styles.repeatSummary}>
