@@ -54,6 +54,13 @@ const styles = {
     }
   `,
 
+  selectedItem: css`
+    background-color: #f1f2fc;
+    &:hover {
+      background-color: #f1f2fc;
+    }
+  `,
+
   addButton: css`
     display: inline-block;
     color: black;
@@ -112,6 +119,7 @@ function RoutineItem(props: {
   length: number;
   moveItem: (sourceId: number, targetId: number) => void;
   selectItem: (routineId: string) => void;
+  isSelected: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [cursorY, setcursorY] = useState<XYCoord | null>();
@@ -170,6 +178,7 @@ function RoutineItem(props: {
           styles.item,
           dragCollected.isDragging && styles.dragged,
           dropCollected.isOver && isOverStyle,
+          props.isSelected && styles.selectedItem,
         ]}
         onClick={() => {
           props.selectItem(props.routine.routineId);
@@ -343,6 +352,7 @@ export default function Routines() {
                     length={routineArray.length}
                     moveItem={moveItem}
                     selectItem={selectItem}
+                    isSelected={x.routineId === selectedRoutineId && showDetail}
                   ></RoutineItem>
                 );
               })}

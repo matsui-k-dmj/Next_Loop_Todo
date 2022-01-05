@@ -8,16 +8,18 @@ const styles = {
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    padding: 1rem;
-    padding-bottom: 1.5rem;
+    padding: 1rem 1% 1.5rem;
   `,
 
   links: css`
     display: flex;
+    gap: 0.5rem;
   `,
 
   link: css`
     padding: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
   `,
 
   selected: css`
@@ -25,7 +27,7 @@ const styles = {
   `,
 
   notSelected: css`
-    opacity: 0.7;
+    opacity: 0.6;
   `,
 
   loginButton: css`
