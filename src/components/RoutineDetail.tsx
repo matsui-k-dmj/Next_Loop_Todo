@@ -276,7 +276,7 @@ export default function RoutineDetail({
           onChange={onChage}
           ref={nameInputRef}
         />
-        <details css={styles.repeatContainer}>
+        <details css={styles.repeatContainer} open>
           <summary css={styles.repeatSummary}>
             繰り返し: <RepeatText repeat={routine.repeat} />
           </summary>
