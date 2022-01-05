@@ -14,7 +14,8 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "fbe": "firebase emulators:start",
-    "prev": "npm run ci && firebase hosting:channel:deploy loop_todo"
+    "prev": "npm run ci && firebase hosting:channel:deploy prev",
+    "clone": "firebase hosting:clone loop-todo-dev:prev loop-todo-dev:live"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
