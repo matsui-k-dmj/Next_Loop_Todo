@@ -1,7 +1,7 @@
 import { BiArrowToRight } from "react-icons/bi";
 import { MdOutlineArchive } from "react-icons/md";
 import { css } from "@emotion/react";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import RepeatText from "components/RepeatText";
 import { getDay, parse } from "date-fns";
@@ -177,6 +177,20 @@ export default function RoutineDetail({
   closeDetail: () => void;
   removeRoutine: (routineId: string) => void;
 }) {
+  useEffect(() => {
+    // ブラウザバックしたときにurlが戻るのを防いで、detailだけ閉じる
+    if (!window.history.state.preventBack) {
+      window.history.pushState({ preventBack: true }, "");
+    }
+    window.addEventListener("popstate", closeDetail);
+    return () => {
+      window.removeEventListener("popstate", closeDetail);
+      if (window.history.state.preventBack) {
+        window.history.back();
+      }
+    };
+  }, []);
+
   function onChage(
     event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) {
