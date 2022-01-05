@@ -32,11 +32,6 @@ const styles = {
 
   repeatContainer: css`
     margin-top: 0.5rem;
-    border-radius: 5px;
-
-    &:hover {
-      outline: 2px solid #ddd;
-    }
   `,
 
   repeatSummary: css`
@@ -114,6 +109,7 @@ function SelectDayOfWeeks(props: {
             ]}
             key={label}
             onClick={() => props.onDowChange(i as DOW)}
+            className="clickable"
           >
             {label}
           </div>
@@ -134,7 +130,7 @@ function RadioMonthType(props: {
   return (
     <>
       <div>
-        <label htmlFor="sameDay">
+        <label htmlFor="sameDay" className="clickable">
           <input
             id="sameDay"
             type="radio"
@@ -142,6 +138,7 @@ function RadioMonthType(props: {
             value="sameDay"
             checked={props.repeat.monthType === "sameDay"}
             onChange={props.onMonthTypeChange}
+            className="clickable"
           />
           <div css={styles.monthTypeText}>
             <RepeatText repeat={sameDayRepeat}></RepeatText>
@@ -150,7 +147,7 @@ function RadioMonthType(props: {
       </div>
 
       <div style={{ marginTop: "0.5rem" }}>
-        <label htmlFor="sameDow">
+        <label htmlFor="sameDow" className="clickable">
           <input
             id="sameDow"
             type="radio"
@@ -158,6 +155,7 @@ function RadioMonthType(props: {
             value="sameDow"
             checked={props.repeat.monthType === "sameDow"}
             onChange={props.onMonthTypeChange}
+            className="clickable"
           />
           <div css={styles.monthTypeText}>
             <RepeatText repeat={sameDowRepeat}></RepeatText>
@@ -263,8 +261,9 @@ export default function RoutineDetail({
   return (
     <>
       <a css={styles.backIcon} onClick={closeDetail}>
-        <BiArrowToRight />
+        <BiArrowToRight className="clickable" />
         <MdOutlineArchive
+          className="clickable"
           onClick={() => {
             removeRoutine(routine.routineId);
             closeDetail();
@@ -298,6 +297,7 @@ export default function RoutineDetail({
               onChange={onTypeChange}
               css={styles.typeSelect}
               name="type"
+              className="clickable"
             >
               <option value="day">日</option>
               <option value="week">週</option>
@@ -312,6 +312,7 @@ export default function RoutineDetail({
                 value={routine.repeat.date}
                 onChange={onChage}
                 style={{ marginLeft: "0.5rem" }}
+                className="clickable"
               />
             </div>
             {routine.repeat.type === "week" && (

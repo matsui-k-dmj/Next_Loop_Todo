@@ -1,20 +1,24 @@
 import { css } from "@emotion/react";
 import { useAuth } from "contexts/AuthContext";
 import Link from "next/link";
-import Image from "next/image";
+import { clickable } from "styles/emotion_global";
 const styles = {
   container: css`
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     gap: 1rem;
     padding: 1rem;
+    padding-bottom: 1.5rem;
   `,
 
   links: css`
     display: flex;
     gap: 1rem;
+  `,
+
+  link: css`
+    padding: 0.5rem;
   `,
 
   selected: css`
@@ -62,29 +66,37 @@ export default function Navbar({ selectedFeature }: NavbarProps) {
         <div css={styles.links}>
           <Link href="/">
             <a
-              css={
+              css={[
+                styles.link,
                 selectedFeature === "todo"
                   ? styles.selected
-                  : styles.notSelected
-              }
+                  : styles.notSelected,
+              ]}
+              className="clickable"
             >
               Todo
             </a>
           </Link>
           <Link href="/routines">
             <a
-              css={
+              css={[
+                styles.link,
                 selectedFeature === "routines"
                   ? styles.selected
-                  : styles.notSelected
-              }
+                  : styles.notSelected,
+              ]}
+              className="clickable"
             >
               Routines
             </a>
           </Link>
         </div>
         {currentUser.isAnonymous && (
-          <button onClick={signInWithGoogle} css={styles.loginButton}>
+          <button
+            onClick={signInWithGoogle}
+            css={[styles.loginButton]}
+            className="clickable"
+          >
             <div css={styles.loginLogo}>
               <img src="/g-logo.png" alt="glogo" width="18px" height="18px" />
             </div>

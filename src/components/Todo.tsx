@@ -47,6 +47,7 @@ const styles = {
       background-color: #ddd;
     }
     opacity: 0.5;
+    cursor: grab;
   `,
 
   dragged: css`
@@ -156,6 +157,10 @@ function RoutineItem(props: {
         dropCollected.isOver && isOverStyle,
         !!props.done && styles.checkedItem,
       ]}
+      onClick={() => {
+        props.onCheckboxClick(props.i);
+      }}
+      className="clickable"
     >
       <div ref={connectDrag} css={styles.grip}>
         <VscGripper></VscGripper>
@@ -164,9 +169,6 @@ function RoutineItem(props: {
         type="checkbox"
         id={props.routine.routineId + props.dateString}
         checked={!!props.done}
-        onClick={() => {
-          props.onCheckboxClick(props.i);
-        }}
         readOnly
       />
       <label

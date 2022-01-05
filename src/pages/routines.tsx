@@ -74,6 +74,7 @@ const styles = {
       background-color: #ddd;
     }
     opacity: 0.5;
+    cursor: grab;
   `,
 
   dragged: css`
@@ -161,7 +162,7 @@ function RoutineItem(props: {
   }
 
   return (
-    <div ref={ref}>
+    <div ref={ref} className="clickable">
       <a
         css={[
           styles.item,
@@ -320,7 +321,11 @@ export default function Routines() {
       <div style={{ display: "flex" }}>
         {(!showDetail || document.documentElement.clientWidth > 600) && (
           <div style={{ flex: "1 1 auto" }}>
-            <button css={styles.addButton} onClick={createNewRoutine}>
+            <button
+              css={styles.addButton}
+              onClick={createNewRoutine}
+              className="clickable"
+            >
               <div style={{ display: "flex", alignItems: "center" }}>
                 <AiOutlinePlus style={{ marginRight: "0.2rem" }} />
                 <span>タスクを追加</span>
