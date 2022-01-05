@@ -30,7 +30,6 @@ const styles = {
   item: css`
     display: flex;
     align-items: center;
-    padding: 0.5rem 1rem 0.5rem 0.1rem;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 
@@ -42,11 +41,10 @@ const styles = {
   grip: css`
     display: flex;
     place-items: center;
-    padding: 0 0.3rem;
-    margin: 0 0.2rem;
-    border-radius: 1rem;
+    padding: 0.8rem;
+    margin-right: 0.3rem;
     &:hover {
-      background-color: #eee;
+      background-color: #ddd;
     }
     opacity: 0.5;
   `,

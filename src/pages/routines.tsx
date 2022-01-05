@@ -43,9 +43,9 @@ const styles = {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem 0.5rem 0.1rem;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
+    padding-right: 0.8rem;
 
     &:hover {
       background-color: #f8f8f8;
@@ -68,11 +68,10 @@ const styles = {
   grip: css`
     display: flex;
     place-items: center;
-    padding: 0 0.3rem;
-    margin: 0 0.2rem;
-    border-radius: 1rem;
+    padding: 0.8rem;
+    margin-right: 0.3rem;
     &:hover {
-      background-color: #ccc;
+      background-color: #ddd;
     }
     opacity: 0.5;
   `,
@@ -173,7 +172,7 @@ function RoutineItem(props: {
           props.selectItem(props.routine.routineId);
         }}
       >
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <div ref={connectDrag} css={styles.grip}>
             <VscGripper></VscGripper>
           </div>
