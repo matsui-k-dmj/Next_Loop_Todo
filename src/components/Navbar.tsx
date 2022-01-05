@@ -14,7 +14,6 @@ const styles = {
 
   links: css`
     display: flex;
-    gap: 1rem;
   `,
 
   link: css`
