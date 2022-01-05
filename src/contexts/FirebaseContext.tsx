@@ -93,10 +93,19 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
       );
     }
 
-    // 日付が変わるときにdateStringを更新する
-    const timeoutId = setTimeout(() => {
+    function updateDateSting() {
       setDateString(format(new Date(), "yyyy-MM-dd"));
-    }, differenceInMilliseconds(startOfDay(addDays(new Date(), 1)), new Date()) + 1000);
+    }
+
+    // 日付が変わるときにdateStringを更新する
+    const timeoutId = setTimeout(
+      updateDateSting,
+      differenceInMilliseconds(startOfDay(addDays(new Date(), 1)), new Date()) +
+        1000
+    );
+
+    // focus時にも日付を更新する
+    window.addEventListener("focus", updateDateSting);
 
     const routinesRef = fbRef(db, `users/${currentUser.uid}/routines`);
     const todayTaskRef = fbRef(
@@ -180,6 +189,7 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
     return () => {
       clearTimeout(timeoutId);
       unsubArray.forEach((unsub) => unsub());
+      window.removeEventListener("focus", updateDateSting);
     };
   }, [currentUser, dateString]);
 
