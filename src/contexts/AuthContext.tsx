@@ -69,7 +69,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (user) {
         setCurrentUser(user);
       } else {
-        console.log("No User!");
         signInAnonymously(auth).then((userCredential) => {
           initilizeData(userCredential.user.uid);
         });
