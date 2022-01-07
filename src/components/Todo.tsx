@@ -165,8 +165,15 @@ function RoutineItem(props: {
       <div ref={connectDrag} css={styles.grip}>
         <VscGripper></VscGripper>
       </div>{" "}
-      <input type="checkbox" checked={!!props.done} readOnly />
-      <label style={{ paddingLeft: "0.5rem" }}>{props.routine.name}</label>
+      <input
+        type="checkbox"
+        checked={!!props.done}
+        readOnly
+        className="clickable"
+      />
+      <label style={{ paddingLeft: "0.5rem" }} className="clickable">
+        {props.routine.name}
+      </label>
     </div>
   );
 }
