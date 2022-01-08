@@ -27,6 +27,7 @@ https://loop-todo-dev.web.app
   - firebase emulator の実行
 - npm run prev
   - format, lint, build を行って、firebase hosting の preview チャンネルにデプロイする
+  - npm run dev は終了させておく
 - npm run clone
   - preview チャンネルを 本番環境にコピーする。
 

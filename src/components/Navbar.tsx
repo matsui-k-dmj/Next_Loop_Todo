@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import { useAuth } from "contexts/AuthContext";
 import Link from "next/link";
-import { clickable } from "styles/emotion_global";
 const styles = {
   container: css`
     display: flex;
