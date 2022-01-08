@@ -11,20 +11,25 @@ const db = admin.database();
  * Run once a day at midnight, to cleanup the users
  * Manually run the task here https://console.cloud.google.com/cloudscheduler
  */
-exports.accountcleanup = functions.pubsub
-  .schedule("every 1 minutes")
+exports.accountcleanup = functions.region('asia-northeast1')
+  .pubsub.schedule("0 0 * * *").timeZone('Asia/Tokyo')
   .onRun(async () => {
     functions.logger.log("Running account cleanup");
     // Fetch all user details.
     const inactiveUsers = await getInactiveUsers([], undefined);
-    // Use a pool so that we delete maximum `MAX_CONCURRENT` users in parallel.
 
+    const errors = [];
     for (const user of inactiveUsers) {
       try {
         await deleteInactiveUser(user);
       } catch (error) {
+        errors.push(error)
         continue;
       }
+    }
+
+    if (errors.length > 0) {
+      throw errors[0]
     }
 
     functions.logger.log("User cleanup finished");
@@ -70,15 +75,16 @@ async function getInactiveUsers(
 ): Promise<admin.auth.UserRecord[]> {
   const result = await admin.auth().listUsers(1000, nextPageToken);
   // Find users that have not signed in in the last 30 days.
+
   const inactiveUsers = result.users.filter((user) => {
     if (user.providerData.length > 0) {
-      // Google ログインしてるユーザは 1年保存
+      // Google ログインしてるユーザは 90日
       return (
         Date.parse(user.metadata.lastSignInTime) <
-        Date.now() - 365 * 24 * 60 * 60 * 1000
+        Date.now() - 90 * 24 * 60 * 60 * 1000
       );
     } else {
-      // 匿名ユーザは30日で消す
+      // 匿名ユーザは7日で消す
       return (
         Date.parse(user.metadata.lastSignInTime) <
         Date.now() - 7 * 24 * 60 * 60 * 1000
