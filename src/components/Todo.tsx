@@ -67,9 +67,8 @@ const styles = {
   `,
 
   tempCheckedItem: css`
-    background-color: #f1f2fc !important;
-    opacity: 0.5;
-    transition: all 0.1s ease;
+    opacity: 0.7;
+    transition: opacity 0.1s ease;
   `,
 };
 
