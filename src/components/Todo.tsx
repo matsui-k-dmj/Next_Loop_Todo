@@ -43,6 +43,7 @@ const styles = {
     place-items: center;
     padding: 0.8rem;
     margin-right: 0.3rem;
+
     &:hover {
       background-color: #ddd;
     }
@@ -64,6 +65,12 @@ const styles = {
     opacity: 0.7;
     text-decoration: line-through;
   `,
+
+  tempCheckedItem: css`
+    background-color: #f1f2fc !important;
+    opacity: 0.5;
+    transition: all 0.1s ease;
+  `,
 };
 
 function isCursorUpperHalf(
@@ -82,6 +89,8 @@ function RoutineItem(props: {
   moveItem: (sourceId: number, targetId: number) => void;
   onCheckboxClick: (i: number) => void;
 }) {
+  const [tempChecked, setTempChecked] = useState(false);
+
   // dropとdragに紐づける。getBoundingClientRect にも使う。
   const ref = useRef<HTMLDivElement>(null);
 
@@ -148,6 +157,14 @@ function RoutineItem(props: {
     }
   }
 
+  function onChick() {
+    setTempChecked(true);
+    setTimeout(() => {
+      props.onCheckboxClick(props.i);
+      setTempChecked(false);
+    }, 150);
+  }
+
   return (
     <div
       ref={ref}
@@ -156,10 +173,9 @@ function RoutineItem(props: {
         dragCollected.isDragging && styles.dragged,
         dropCollected.isOver && isOverStyle,
         !!props.done && styles.checkedItem,
+        tempChecked && styles.tempCheckedItem,
       ]}
-      onClick={(event) => {
-        props.onCheckboxClick(props.i);
-      }}
+      onClick={onChick}
       className="clickable"
     >
       <div ref={connectDrag} css={styles.grip}>
