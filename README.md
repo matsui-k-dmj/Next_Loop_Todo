@@ -11,13 +11,14 @@ https://loop-todo-dev.web.app
 
 - TypeScript
   - React
-  - NextJS (CSR しか使っていないが、慣れるために使用した。)
+  - NextJS (CSR のみ)
   - emotion
   - date-fns
   - React DnD (ドラッグ & ドロップ)
 - Firebase
   - Authentication (匿名認証, Google でのログイン)
   - Realtime database
+  - Cloud Functions (アクティブでないユーザの削除を定期実行)
 
 ## コマンドなど
 
@@ -30,6 +31,8 @@ https://loop-todo-dev.web.app
   - npm run dev は終了させておく
 - npm run clone
   - preview チャンネルを 本番環境にコピーする。
+- firebase deploy --only functions
+  - cloud functions をデプロイ
 
 ## 実装概要
 
@@ -53,9 +56,8 @@ NEXT_PUBLIC_databaseURL=
 contexts/AuthContext にまとめた。
 
 - 匿名認証, データの初期化
-- Google でのアカウント作成
+- Google でのアカウント作成, データの引継ぎ
 - すでにアカウント作成を作成している場合のログイン
-- 現在のユーザの保持
 
 ### Realtime database との接続
 
@@ -89,3 +91,9 @@ rtdb のイベントリスナーは contexts/FirebaseContext にまとめた。�
 
 - 繰り返し判定のロジックのテストを \_\_test\_\_/repeats.ts で行っている
 - 認証情報の削除、匿名認証とデータの初期化だけ cypress で行っている。
+
+### アクティブでないユーザの削除の定期実行
+
+- functions/src/index.ts
+- [公式サンプル](https://github.com/firebase/functions-samples/tree/main/delete-unused-accounts-cron/functions)を TS 化して, region や timezone などを変更
+- 消すユーザのデータも同時に消す。
