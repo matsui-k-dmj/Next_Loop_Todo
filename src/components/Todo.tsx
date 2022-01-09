@@ -162,7 +162,7 @@ function RoutineItem(props: {
     setTimeout(() => {
       props.onCheckboxClick(props.i);
       setTempChecked(false);
-    }, 150);
+    }, 100);
   }
 
   return (
