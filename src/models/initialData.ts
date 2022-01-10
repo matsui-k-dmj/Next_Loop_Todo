@@ -3,9 +3,9 @@ import { format, subDays } from "date-fns";
 const date = format(new Date(), "yyyy-MM-dd");
 
 export const initialRoutines = {
-  breakfast: {
-    routineId: "breakfast",
-    name: "朝食",
+  nikki: {
+    routineId: "nikki",
+    name: "日記",
     sortValue: 0,
     deleted: false,
     subtaskes: [],
@@ -27,21 +27,21 @@ export const initialRoutines = {
       date: date,
     },
   },
-  kintore2: {
-    routineId: "kintore2",
-    name: "筋トレ2",
+  post: {
+    routineId: "post",
+    name: "ポスト確認",
     sortValue: 200000,
     deleted: false,
     subtaskes: [],
     repeat: {
       type: "day",
-      every: 2,
-      date: format(subDays(new Date(date), 1), "yyyy-MM-dd"),
+      every: 3,
+      date: date,
     },
   },
-  shukkin: {
-    routineId: "shukkin",
-    name: "出勤",
+  gomisute: {
+    routineId: "gomisute",
+    name: "ゴミ捨て確認",
     sortValue: 300000,
     deleted: false,
     subtaskes: [],
@@ -49,7 +49,7 @@ export const initialRoutines = {
       type: "week",
       every: 1,
       date: date,
-      dayOfWeeks: [1, 2, 3, 4, 5],
+      dayOfWeeks: [0, 1, 2, 3, 4],
     },
   },
   souji: {
@@ -60,7 +60,7 @@ export const initialRoutines = {
     subtaskes: [],
     repeat: {
       type: "week",
-      every: 2,
+      every: 1,
       date: date,
       dayOfWeeks: [6],
     },
@@ -72,23 +72,10 @@ export const initialRoutines = {
     deleted: false,
     subtaskes: [],
     repeat: {
-      type: "month",
+      type: "week",
       every: 1,
       date: date,
-      monthType: "sameDay",
+      dayOfWeeks: [5],
     },
-  },
-  hanseikai: {
-    routineId: "hanseikai",
-    name: "反省会",
-    sortValue: 600000,
-    deleted: false,
-    subtaskes: [],
-    repeat: {
-      type: "month",
-      every: 1,
-      date: date,
-      monthType: "sameDow",
-    },
-  },
+  }
 };

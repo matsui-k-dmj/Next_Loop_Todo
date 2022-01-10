@@ -339,7 +339,7 @@ export default function Routines() {
             >
               <div style={{ display: "flex", alignItems: "center" }}>
                 <AiOutlinePlus style={{ marginRight: "0.2rem" }} />
-                <span>タスクを追加</span>
+                <span>ルーティンを追加</span>
               </div>
             </button>
             <div css={styles.list}>
