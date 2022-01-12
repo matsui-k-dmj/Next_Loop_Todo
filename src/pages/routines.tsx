@@ -3,7 +3,7 @@ import Navbar from "components/Navbar";
 import RepeatText from "components/RepeatText";
 
 import { css } from "@emotion/react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Routine, Task } from "models/model";
 
 import {
@@ -31,6 +31,7 @@ import RoutineDetail from "components/RoutineDetail";
 import { format } from "date-fns";
 import { VscGripper } from "react-icons/vsc";
 import { useFirebase } from "contexts/FirebaseContext";
+import { useRouter } from "next/router";
 
 const styles = {
   list: css`
@@ -210,6 +211,16 @@ export default function Routines() {
 
   const { currentUser } = useAuth();
   const { routineArray, minTaskSortValue } = useFirebase();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (selectedRoutineId == null) {
+      if (typeof router.query.routineId === "string") {
+        setSelectedRoutineId(router.query.routineId);
+        setShowDetail(true);
+      }
+    }
+  }, []);
 
   function fbSetRoutine(newRoutine: Routine) {
     if (currentUser == null) return;

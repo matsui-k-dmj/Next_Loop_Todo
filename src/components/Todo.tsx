@@ -19,7 +19,10 @@ import { db } from "lib/firebaseConfig";
 
 import { ref as fbRef, set as fbSet } from "firebase/database";
 import { VscGripper } from "react-icons/vsc";
+import { FaCog } from "react-icons/fa";
+
 import parse from "date-fns/parse";
+import Link from "next/link";
 
 const styles = {
   list: css`
@@ -69,6 +72,14 @@ const styles = {
   tempCheckedItem: css`
     opacity: 0.7;
     transition: opacity 0.1s ease;
+  `,
+  cogContainer: css`
+    margin-left: auto;
+    padding: 0 0.7rem;
+  `,
+  cog: css`
+    opacity: 0.7;
+    vertical-align: middle;
   `,
 };
 
@@ -189,6 +200,21 @@ function RoutineItem(props: {
       <label style={{ paddingLeft: "0.5rem" }} className="clickable">
         {props.routine.name}
       </label>
+      <div
+        css={styles.cogContainer}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <Link
+          href={{
+            pathname: "/routines",
+            query: { routineId: props.routine.routineId },
+          }}
+        >
+          <a css={styles.cog}>
+            <FaCog></FaCog>
+          </a>
+        </Link>
+      </div>
     </div>
   );
 }

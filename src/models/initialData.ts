@@ -77,5 +77,5 @@ export const initialRoutines = {
       date: date,
       dayOfWeeks: [5],
     },
-  }
+  },
 };
