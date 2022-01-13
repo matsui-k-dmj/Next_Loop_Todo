@@ -211,7 +211,7 @@ export default function RoutineDetail({
         newRoutine.name = value;
         break;
       case "every":
-        newRoutine.repeat.every = parseInt(value);
+        newRoutine.repeat.every = value === "" ? 0 : parseInt(value);
         break;
       case "date":
         newRoutine.repeat.date = value;
@@ -287,7 +287,7 @@ export default function RoutineDetail({
             <input
               type="number"
               step="1"
-              value={routine.repeat.every}
+              value={routine.repeat.every === 0 ? "" : routine.repeat.every}
               css={styles.every}
               onChange={onChage}
               name="every"
