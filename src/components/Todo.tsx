@@ -187,6 +187,7 @@ function RoutineItem(props: {
       ]}
       onClick={onChick}
       className="clickable"
+      data-testid="todoItem"
     >
       <div ref={connectDrag} css={styles.grip}>
         <VscGripper></VscGripper>

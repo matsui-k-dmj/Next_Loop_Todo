@@ -173,7 +173,7 @@ function RoutineItem(props: {
   }
 
   return (
-    <div ref={ref} className="clickable">
+    <div ref={ref} className="clickable" data-testid="routineItem">
       <a
         css={[
           styles.item,
