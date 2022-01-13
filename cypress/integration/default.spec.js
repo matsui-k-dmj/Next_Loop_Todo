@@ -1,16 +1,24 @@
 /// <reference types="cypress" />
+import { format } from "date-fns";
+import ja from "date-fns/locale/ja";
+
 describe("index", () => {
-  before(() => {
+  beforeEach(() => {
     cy.clearIndexedDB();
   });
-  it("visit index", () => {
+  it("初期値と遷移", () => {
     cy.visit("/");
-    cy.contains("朝食").click();
+    // Todo
+    cy.contains("ログイン");
+    cy.contains("日記");
+    cy.contains(format(new Date(), "M/d E", { locale: ja }));
 
+    // Routine
     cy.contains("Routines").click();
+    cy.contains("ルーティンを追加");
+    cy.contains("日記");
 
-    cy.contains("タスクを追加").click();
-
-    cy.contains("朝食").click();
+    // back to Todo
+    cy.contains("Todo").click();
   });
 });
