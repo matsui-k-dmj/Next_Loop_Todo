@@ -79,7 +79,12 @@ const styles = {
   `,
   cog: css`
     opacity: 0.4;
-    vertical-align: middle;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    &:hover {
+      opacity: 0.7;
+    }
   `,
 };
 
@@ -204,6 +209,7 @@ function RoutineItem(props: {
       <div
         css={styles.cogContainer}
         onClick={(event) => event.stopPropagation()}
+        className="clickable"
       >
         <Link
           href={{
