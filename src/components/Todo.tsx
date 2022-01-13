@@ -78,7 +78,7 @@ const styles = {
     padding: 0 0.7rem;
   `,
   cog: css`
-    opacity: 0.5;
+    opacity: 0.4;
     vertical-align: middle;
   `,
 };
