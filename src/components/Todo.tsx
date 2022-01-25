@@ -58,10 +58,10 @@ const styles = {
     opacity: 0.5;
   `,
   isOverTop: css`
-    border-top: 1px solid #111;
+    border-top: 1px solid var(--border-sorting);
   `,
   isOverBottom: css`
-    border-bottom: 1px solid #111;
+    border-bottom: 1px solid var(--border-sorting);
   `,
 
   checkedItem: css`

@@ -14,3 +14,7 @@ body {
 input::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
+
+:root {
+  --border-sorting: #3b82f6;
+}
