@@ -28,6 +28,9 @@ const styles = {
 
   notSelected: css`
     opacity: 0.6;
+    &:hover {
+      opacity: 1;
+    }
   `,
 
   loginButton: css`
