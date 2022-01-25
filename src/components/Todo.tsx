@@ -73,17 +73,21 @@ const styles = {
     opacity: 0.7;
     transition: opacity 0.1s ease;
   `,
-  cogContainer: css`
-    margin-left: auto;
-    padding: 0 0.7rem;
-  `,
+
   cog: css`
-    opacity: 0.4;
-    font-size: 1.2rem;
+    align-self: stretch;
+
     display: flex;
     align-items: center;
+
+    margin-left: auto;
+    padding: 0 0.7rem;
+
+    font-size: 1.2rem;
+    opacity: 0.4;
+
     &:hover {
-      opacity: 0.7;
+      background-color: #ddd;
     }
   `,
 };
@@ -206,22 +210,20 @@ function RoutineItem(props: {
       <label style={{ paddingLeft: "0.5rem" }} className="clickable">
         {props.routine.name}
       </label>
-      <div
-        css={styles.cogContainer}
-        onClick={(event) => event.stopPropagation()}
-        className="clickable"
+      <Link
+        href={{
+          pathname: "/routines",
+          query: { routineId: props.routine.routineId },
+        }}
       >
-        <Link
-          href={{
-            pathname: "/routines",
-            query: { routineId: props.routine.routineId },
-          }}
+        <a
+          css={styles.cog}
+          onClick={(event) => event.stopPropagation()}
+          className="clickable"
         >
-          <a css={styles.cog}>
-            <FaCog></FaCog>
-          </a>
-        </Link>
-      </div>
+          <FaCog></FaCog>
+        </a>
+      </Link>
     </div>
   );
 }
