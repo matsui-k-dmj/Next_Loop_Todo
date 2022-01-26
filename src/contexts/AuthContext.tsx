@@ -59,7 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (credential == null) {
           throw error;
         }
-        signInWithCredential(auth, credential);
+        // 既存アカウントでログインして、すでに読み込んでるroutinesなどをリセットするためにreload
+        signInWithCredential(auth, credential).then(() => location.reload());
       } else {
         throw error;
       }

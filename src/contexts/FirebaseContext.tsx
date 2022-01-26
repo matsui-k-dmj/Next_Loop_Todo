@@ -190,9 +190,6 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
       clearTimeout(timeoutId);
       unsubArray.forEach((unsub) => unsub());
       window.removeEventListener("focus", updateDateSting);
-      setRoutineArray([]);
-      setTodayTaskArray([]);
-      setYesterdayTaskArray([]);
     };
   }, [currentUser, dateString]);
 
