@@ -18,20 +18,17 @@ const styles = {
   `,
 
   name: css`
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     border: 0px;
     border-radius: 5px;
     width: 100%;
     padding: 0.5rem;
+    resize: none;
 
     &:focus,
     &:hover {
       outline: 2px solid #ddd;
     }
-  `,
-
-  repeatContainer: css`
-    margin-top: 0.5rem;
   `,
 
   repeatSummary: css`
@@ -194,7 +191,12 @@ export default function RoutineDetail({
   closeDetail: () => void;
   removeRoutine: (routineId: string) => void;
 }) {
-  const nameInputRef = useRef<HTMLInputElement>(null);
+  const nameInputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    // タイトルのtextareaのサイズを調整
+    autoGrowTextarea(nameInputRef.current);
+  });
 
   useEffect(() => {
     // routineのnameが無いときにname input にfocusする
@@ -218,7 +220,10 @@ export default function RoutineDetail({
   }, []);
 
   function onChage(
-    event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+    event:
+      | ChangeEvent<HTMLInputElement>
+      | ChangeEvent<HTMLSelectElement>
+      | ChangeEvent<HTMLTextAreaElement>
   ) {
     if (routine == null) return;
     const newRoutine = cloneDeep(routine);
@@ -279,9 +284,17 @@ export default function RoutineDetail({
     setRoutine(newRoutine);
   }
 
+  function autoGrowTextarea(element: HTMLTextAreaElement | null) {
+    if (element == null) return;
+
+    element.style.height = "auto";
+    element.style.height = element.scrollHeight + "px";
+  }
+
   if (routine == null) {
     return <div> Not Found </div>;
   }
+
   return (
     <>
       <a css={styles.backIcon} onClick={closeDetail}>
@@ -295,18 +308,19 @@ export default function RoutineDetail({
         />
       </a>
       <div>
-        <input
-          type="input"
+        <textarea
           name="name"
           value={routine.name}
           css={styles.name}
           onChange={onChage}
           ref={nameInputRef}
+          placeholder="ルーティン名を入力"
+          rows={1}
+          onInput={() => {
+            autoGrowTextarea(nameInputRef.current);
+          }}
         />
-        <details css={styles.repeatContainer} open>
-          <summary css={styles.repeatSummary}>
-            繰り返し: <RepeatText repeat={routine.repeat} />
-          </summary>
+        <div>
           <div css={styles.repeatContents}>
             <input
               type="number"
@@ -386,7 +400,7 @@ export default function RoutineDetail({
               </div>
             )}
           </div>
-        </details>
+        </div>
       </div>
     </>
   );
