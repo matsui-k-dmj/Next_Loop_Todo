@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import { ChangeEvent, useEffect, useRef } from "react";
 import cloneDeep from "lodash/cloneDeep";
 import RepeatText from "components/RepeatText";
-import { getDay, parse } from "date-fns";
+import { addDays, format, getDay, parse } from "date-fns";
 import { DOW, Repeat, Routine } from "models/model";
 
 const styles = {
@@ -43,7 +43,7 @@ const styles = {
   `,
 
   repeatContentDetails: css`
-    margin-top: 1rem;
+    margin-top: 1.2rem;
   `,
 
   every: css`
@@ -59,6 +59,23 @@ const styles = {
 
   dateContainer: css`
     margin-top: 1rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  `,
+  dateButtonsContainer: css`
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+  `,
+  dateButton: css`
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 0.3rem 0.5rem;
+    &:hover {
+      background-color: #f8f8f8;
+    }
   `,
 
   dowContainer: css`
@@ -222,6 +239,13 @@ export default function RoutineDetail({
     setRoutine(newRoutine);
   }
 
+  function changeDate(days: number) {
+    if (routine == null) return;
+    const newRoutine = cloneDeep(routine);
+    newRoutine.repeat.date = format(addDays(new Date(), days), "yyyy-MM-dd");
+    setRoutine(newRoutine);
+  }
+
   function onTypeChange(event: ChangeEvent<HTMLSelectElement>) {
     event.preventDefault();
     if (routine == null) return;
@@ -305,15 +329,45 @@ export default function RoutineDetail({
             </select>
             毎 <br />
             <div css={styles.dateContainer}>
-              開始日:
-              <input
-                type="date"
-                name="date"
-                value={routine.repeat.date}
-                onChange={onChage}
-                style={{ marginLeft: "0.5rem" }}
-                className="clickable"
-              />
+              <div>開始日:</div>
+              <div>
+                <input
+                  type="date"
+                  name="date"
+                  value={routine.repeat.date}
+                  onChange={onChage}
+                  className="clickable"
+                />
+                <div css={styles.dateButtonsContainer}>
+                  <button
+                    css={styles.dateButton}
+                    className="clickable"
+                    onClick={() => {
+                      changeDate(-1);
+                    }}
+                  >
+                    昨日
+                  </button>
+                  <button
+                    css={styles.dateButton}
+                    className="clickable"
+                    onClick={() => {
+                      changeDate(0);
+                    }}
+                  >
+                    今日
+                  </button>
+                  <button
+                    css={styles.dateButton}
+                    className="clickable"
+                    onClick={() => {
+                      changeDate(1);
+                    }}
+                  >
+                    明日
+                  </button>
+                </div>
+              </div>
             </div>
             {routine.repeat.type === "week" && (
               <div css={styles.repeatContentDetails}>
