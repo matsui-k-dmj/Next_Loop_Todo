@@ -207,7 +207,7 @@ function RoutineItem(props: {
         readOnly
         className="clickable"
       />
-      <label style={{ paddingLeft: "0.5rem" }} className="clickable">
+      <label style={{ padding: "0.5rem" }} className="clickable">
         {props.routine.name}
       </label>
       <Link

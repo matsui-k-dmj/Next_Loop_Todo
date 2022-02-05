@@ -189,7 +189,7 @@ function RoutineItem(props: {
           <div ref={connectDrag} css={styles.grip}>
             <VscGripper></VscGripper>
           </div>
-          {props.routine.name}{" "}
+          <div style={{ padding: "0.5rem" }}>{props.routine.name}</div>
         </div>
         <div
           style={{
