@@ -1,5 +1,5 @@
 import { BiArrowToRight } from "react-icons/bi";
-import { MdOutlineArchive } from "react-icons/md";
+import { FaTrashAlt } from "react-icons/fa";
 import { css } from "@emotion/react";
 import { ChangeEvent, useEffect, useRef } from "react";
 import cloneDeep from "lodash/cloneDeep";
@@ -8,13 +8,23 @@ import { addDays, format, getDay, parse } from "date-fns";
 import { DOW, Repeat, Routine } from "models/model";
 
 const styles = {
+  icons: css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  `,
   backIcon: css`
     color: black;
     opacity: 0.6;
     font-size: 1.8rem;
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
+    align-items: center;
+  `,
+  trashIcon: css`
+    color: black;
+    opacity: 0.6;
+    font-size: 1.2rem;
   `,
 
   name: css`
@@ -22,6 +32,7 @@ const styles = {
     border: 0px;
     border-radius: 5px;
     width: 100%;
+    margin-top: 0.5rem;
     padding: 0.5rem;
     resize: none;
 
@@ -31,12 +42,8 @@ const styles = {
     }
   `,
 
-  repeatSummary: css`
-    padding: 0.5rem;
-  `,
-
   repeatContents: css`
-    padding: 1rem;
+    margin: 0.5rem;
   `,
 
   repeatContentDetails: css`
@@ -297,16 +304,21 @@ export default function RoutineDetail({
 
   return (
     <>
-      <a css={styles.backIcon} onClick={closeDetail}>
-        <BiArrowToRight className="clickable" />
-        <MdOutlineArchive
+      <div css={styles.icons}>
+        <a css={styles.backIcon} onClick={closeDetail}>
+          <BiArrowToRight className="clickable" />
+        </a>
+
+        <FaTrashAlt
+          css={styles.trashIcon}
           className="clickable"
           onClick={() => {
             removeRoutine(routine.routineId);
             closeDetail();
           }}
         />
-      </a>
+      </div>
+
       <div>
         <textarea
           name="name"
@@ -322,26 +334,29 @@ export default function RoutineDetail({
         />
         <div>
           <div css={styles.repeatContents}>
-            <input
-              type="number"
-              step="1"
-              value={routine.repeat.every === 0 ? "" : routine.repeat.every}
-              css={styles.every}
-              onChange={onChage}
-              name="every"
-            />
-            <select
-              value={routine.repeat.type}
-              onChange={onTypeChange}
-              css={styles.typeSelect}
-              name="type"
-              className="clickable"
-            >
-              <option value="day">日</option>
-              <option value="week">週</option>
-              <option value="month">月</option>
-            </select>
-            毎 <br />
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <input
+                type="number"
+                step="1"
+                value={routine.repeat.every === 0 ? "" : routine.repeat.every}
+                css={styles.every}
+                onChange={onChage}
+                name="every"
+              />
+              <select
+                value={routine.repeat.type}
+                onChange={onTypeChange}
+                css={styles.typeSelect}
+                name="type"
+                className="clickable"
+              >
+                <option value="day">日</option>
+                <option value="week">週</option>
+                <option value="month">月</option>
+              </select>
+              毎
+            </div>
+
             <div css={styles.dateContainer}>
               <div>開始日:</div>
               <div>
