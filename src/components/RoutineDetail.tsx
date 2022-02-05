@@ -295,7 +295,7 @@ export default function RoutineDetail({
     if (element == null) return;
 
     element.style.height = "auto";
-    element.style.height = element.scrollHeight + "px";
+    element.style.height = element.scrollHeight + 5 + "px";
   }
 
   if (routine == null) {
