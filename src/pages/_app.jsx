@@ -18,6 +18,17 @@ const styles = {
     margin: 0 auto;
     padding: 0 4%;
   `,
+  footer: css`
+    position: fixed;
+    left: 0;
+    bottom: 0.5rem;
+  `,
+  credit: css`
+    text-decoration: none;
+    color: black;
+    opacity: 0.7;
+    font-size: 0.8rem;
+  `,
 };
 
 function MyApp({ Component, pageProps }) {
@@ -25,6 +36,27 @@ function MyApp({ Component, pageProps }) {
     <>
       <Head>
         <title>Loop Todo</title>
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#00aba9" />
+        <meta name="theme-color" content="#ffffff" />
       </Head>
       <AuthProvider>
         <FirebaseProvider>
@@ -32,6 +64,15 @@ function MyApp({ Component, pageProps }) {
             <div css={styles.container}>
               <Component {...pageProps} />
             </div>
+            <footer css={[styles.container, styles.footer]}>
+              <a
+                css={styles.credit}
+                href="https://www.flaticon.com/free-icons/process"
+                title="process icons"
+              >
+                Process icons created by Freepik - Flaticon
+              </a>
+            </footer>
           </DndProvider>
         </FirebaseProvider>
       </AuthProvider>
