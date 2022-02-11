@@ -45,3 +45,6 @@ stories/
 .vscode/
 
 .firebase/
+
+public/sw.js
+public/workbox*

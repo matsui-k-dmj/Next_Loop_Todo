@@ -15,18 +15,20 @@ import { FirebaseProvider } from "contexts/FirebaseContext";
 const styles = {
   container: css`
     max-width: 1500px;
+    min-height: 100vh;
     margin: 0 auto;
     padding: 0 4%;
   `,
   footer: css`
-    position: fixed;
-    left: 0;
-    bottom: 0.5rem;
+    max-width: 1500px;
+
+    margin: 1rem auto 0.5rem;
+    padding: 0 4%;
   `,
   credit: css`
     text-decoration: none;
     color: black;
-    opacity: 0.7;
+    opacity: 0.5;
     font-size: 0.8rem;
   `,
 };
@@ -64,7 +66,7 @@ function MyApp({ Component, pageProps }) {
             <div css={styles.container}>
               <Component {...pageProps} />
             </div>
-            <footer css={[styles.container, styles.footer]}>
+            <footer css={styles.footer}>
               <a
                 css={styles.credit}
                 href="https://www.flaticon.com/free-icons/process"
