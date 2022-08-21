@@ -17,6 +17,8 @@ const styles = {
   `,
 
   link: css`
+    color: inherit;
+    text-decoration: none;
     padding: 0.5rem;
     font-size: 1.1rem;
     font-weight: bold;
@@ -68,7 +70,7 @@ export default function Navbar({ selectedFeature }: NavbarProps) {
     <>
       <div css={styles.container}>
         <div css={styles.links}>
-          <Link href="/">
+          <Link href="/" passHref>
             <a
               css={[
                 styles.link,
@@ -81,7 +83,7 @@ export default function Navbar({ selectedFeature }: NavbarProps) {
               Todo
             </a>
           </Link>
-          <Link href="/routines">
+          <Link href="/routines" passHref>
             <a
               css={[
                 styles.link,
