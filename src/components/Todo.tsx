@@ -76,7 +76,8 @@ const styles = {
 
   cog: css`
     align-self: stretch;
-
+    color: inherit;
+    text-decoration: none;
     display: flex;
     align-items: center;
 
@@ -206,8 +207,13 @@ function RoutineItem(props: {
         checked={!!props.done}
         readOnly
         className="clickable"
+        id={`${props.routine.routineId}-${props.dateString}`}
       />
-      <label style={{ padding: "0.5rem" }} className="clickable">
+      <label
+        style={{ padding: "0.5rem" }}
+        className="clickable"
+        htmlFor={`${props.routine.routineId}-${props.dateString}`}
+      >
         {props.routine.name}
       </label>
       <Link
@@ -215,6 +221,7 @@ function RoutineItem(props: {
           pathname: "/routines",
           query: { routineId: props.routine.routineId },
         }}
+        passHref
       >
         <a
           css={styles.cog}

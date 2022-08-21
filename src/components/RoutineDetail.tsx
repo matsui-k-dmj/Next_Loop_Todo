@@ -210,6 +210,7 @@ export default function RoutineDetail({
     // タイトルのtextareaのサイズを調整
     autoGrowTextarea(nameInputRef.current);
   }, [routine.routineId]);
+
   useEffect(() => {
     // routineのnameが無いときにname input にfocusする
     if (nameInputRef.current != null) {
