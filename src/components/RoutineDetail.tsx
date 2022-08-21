@@ -210,13 +210,14 @@ export default function RoutineDetail({
     // タイトルのtextareaのサイズを調整
     autoGrowTextarea(nameInputRef.current);
   }, [routine.routineId]);
-
   useEffect(() => {
     // routineのnameが無いときにname input にfocusする
-    if (nameInputRef.current != null && routine.name === "") {
+    if (nameInputRef.current != null) {
       nameInputRef.current.focus();
+      const len = nameInputRef.current.value.length;
+      nameInputRef.current.setSelectionRange(len, len); // 最後の文字の後ろにフォーカス
     }
-  });
+  }, [routine.routineId]);
 
   useEffect(() => {
     // ブラウザバックしたときにurlが戻るのを防いで、detailだけ閉じる
