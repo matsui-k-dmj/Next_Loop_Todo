@@ -42,12 +42,13 @@ const styles = {
     overflow: auto;
   `,
   item: css`
+    background-color: white;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    border: 1px solid #ddd;
     padding-right: 0.8rem;
 
     &:hover {
@@ -122,7 +123,7 @@ function RoutineItem(props: {
   selectItem: (routineId: string) => void;
   isSelected: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLButtonElement>(null);
   const [cursorY, setcursorY] = useState<XYCoord | null>();
 
   const [dropCollected, connectDrop] = useDrop({
@@ -173,35 +174,36 @@ function RoutineItem(props: {
   }
 
   return (
-    <div ref={ref} className="clickable" data-testid="routineItem">
-      <a
-        css={[
-          styles.item,
-          dragCollected.isDragging && styles.dragged,
-          dropCollected.isOver && isOverStyle,
-          props.isSelected && styles.selectedItem,
-        ]}
-        onClick={() => {
-          props.selectItem(props.routine.routineId);
+    <button
+      ref={ref}
+      className="clickable"
+      data-testid="routineItem"
+      css={[
+        styles.item,
+        dragCollected.isDragging && styles.dragged,
+        dropCollected.isOver && isOverStyle,
+        props.isSelected && styles.selectedItem,
+      ]}
+      onClick={() => {
+        props.selectItem(props.routine.routineId);
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div ref={connectDrag} css={styles.grip}>
+          <VscGripper></VscGripper>
+        </div>
+        <div style={{ padding: "0.5rem" }}>{props.routine.name}</div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          flex: "1 0 auto",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div ref={connectDrag} css={styles.grip}>
-            <VscGripper></VscGripper>
-          </div>
-          <div style={{ padding: "0.5rem" }}>{props.routine.name}</div>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            flex: "1 0 auto",
-          }}
-        >
-          <RepeatText repeat={props.routine.repeat}></RepeatText>
-        </div>
-      </a>
-    </div>
+        <RepeatText repeat={props.routine.repeat}></RepeatText>
+      </div>
+    </button>
   );
 }
 
