@@ -16,6 +16,8 @@ const styles = {
   `,
   backIcon: css`
     color: black;
+    background-color: white;
+    border: 0;
     opacity: 0.6;
     font-size: 1.8rem;
     display: flex;
@@ -23,8 +25,12 @@ const styles = {
   `,
   trashIcon: css`
     color: black;
+    background-color: white;
+    border: 0;
     opacity: 0.6;
     font-size: 1.2rem;
+    display: flex;
+    align-items: center;
   `,
 
   name: css`
@@ -305,18 +311,24 @@ export default function RoutineDetail({
   return (
     <>
       <div css={styles.icons}>
-        <a css={styles.backIcon} onClick={closeDetail}>
-          <BiArrowToRight className="clickable" />
-        </a>
-
-        <FaTrashAlt
-          css={styles.trashIcon}
+        <button
+          css={styles.backIcon}
+          onClick={closeDetail}
           className="clickable"
+        >
+          <BiArrowToRight />
+        </button>
+
+        <button
           onClick={() => {
             removeRoutine(routine.routineId);
             closeDetail();
           }}
-        />
+          css={styles.trashIcon}
+          className="clickable"
+        >
+          <FaTrashAlt />
+        </button>
       </div>
 
       <div>
