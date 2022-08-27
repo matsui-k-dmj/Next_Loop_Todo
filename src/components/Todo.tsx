@@ -213,6 +213,9 @@ function RoutineItem(props: {
         style={{ padding: "0.5rem" }}
         className="clickable"
         htmlFor={`${props.routine.routineId}-${props.dateString}`}
+        onClick={(e) => {
+          e.preventDefault();
+        }}
       >
         {props.routine.name}
       </label>
